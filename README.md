@@ -8,7 +8,11 @@ An Undergraduate Thesis Presented to the Faculty of the Agricultural and Biosyst
 
 SEPTEMBER 2026
 
-Readable Markdown copy of [the original paper](docs/paper.docx). The paper text, tables, embedded figures, draft placeholders, and review comments are retained. Page numbers are replaced with links for navigation.
+Readable Markdown transcription of an earlier paper draft. The paper text, tables, embedded figures, draft placeholders, and review comments are retained below. Page numbers are replaced with links for navigation; earlier Word drafts are available in the Git history.
+
+The current proposal is [initial_paper.docx](docs/initial_paper.docx). It proposes limited offline recording in onboard flash, later upload over a configured Wi-Fi connection, and a web dashboard in place of a device screen. The Markdown transcription below and existing Blender models document earlier versions. See [the revision notes](docs/OFFLINE_SCREENLESS_REVIEW.md) for the scope changes and implementation limits.
+
+Supporting references: [technical cheat sheet](docs/TECHNICAL_CHEAT_SHEET.md), [Word technical cheatcode](docs/technical-cheatcode.docx), and [researched materials budget](docs/MATERIALS_BUDGET_RESEARCH.md).
 
 ## Contents
 
