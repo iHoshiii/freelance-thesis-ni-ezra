@@ -9,3 +9,14 @@
 # Python caches
 __pycache__/
 *.py[cod]
+
+# Application dependencies, builds, and local secrets
+node_modules/
+.next/
+coverage/
+.env*
+!.env.example
+.pio/
+.venv/
+*.tsbuildinfo
+firmware/include/secrets.h
