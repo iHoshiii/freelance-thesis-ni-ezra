@@ -14,6 +14,10 @@ The current proposal is [initial_paper.docx](docs/initial_paper.docx). It propos
 
 Supporting references: [technical cheat sheet](docs/TECHNICAL_CHEAT_SHEET.md), [Word technical cheatcode](docs/technical-cheatcode.docx), and [researched materials budget](docs/MATERIALS_BUDGET_RESEARCH.md).
 
+For device parts, calibration supplies, shared reference equipment, and testing expenses, see the [complete materials and testing budget checklist](docs/COMPLETE_MATERIALS_AND_TESTING_BUDGET.md).
+
+Marketplace sourcing: [Shopee candidate listings and remaining purchasing checklist](docs/SHOPEE_PURCHASING_CHECKLIST.md).
+
 Software starter: [system setup and stack](docs/SYSTEM_SETUP.md), [web application](apps/web), [database migration](supabase/migrations/202611040001_initial.sql), and [firmware scaffold](firmware). Run `npm run dev` from `apps/web` to open the initial dashboard. Hardware acquisition, user login, and the trained advisor remain to be implemented.
 
 ## Contents
