@@ -4,6 +4,7 @@ export const readingSchema = z.object({
   deviceId: z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/),
   recordId: z.uuid().transform((id) => id.toLowerCase()),
   sampleId: z.string().trim().min(1).max(120),
+  location: z.string().trim().min(1).max(120).refine((value) => value !== "__unassigned").optional(),
   acquiredAt: z.iso.datetime({ offset: true }).nullable(),
   timeQuality: z.enum(["synced", "unknown"]),
   ph: z.number().min(0).max(14).nullable(),
