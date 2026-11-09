@@ -13,7 +13,7 @@ export function getPrisma(): PrismaClient {
   if (!connectionString) throw new Error("DATABASE_URL is not configured.");
 
   client = new PrismaClient({
-    adapter: new PrismaPg({ connectionString, max: 5, connectionTimeoutMillis: 5000 }),
+    adapter: new PrismaPg({ connectionString, options: "-c timezone=UTC", max: 5, connectionTimeoutMillis: 5000 }),
   });
   if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = client;
   return client;

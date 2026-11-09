@@ -1,6 +1,6 @@
 # SoilSense UI design plan
 
-Status: Planned
+Status: Implemented in the web application.
 Agreed: 9 November 2026
 
 ## Design direction
@@ -107,3 +107,13 @@ Keep the last scan visible independently of history filters. Group actions with 
 - Labels are brief, units are visible, and paragraphs do not dominate the dashboard.
 - Empty, loading, missing-data, and error states remain useful and truthful.
 - The layout fits the agreed dashboard scope and works on desktop and mobile.
+
+## Current implementation
+
+- Forest-green navigation and white reading and history panels use the palette above.
+- Overview, scans, record details, devices, and setup share the same visual system.
+- The last scan uses four divided reading groups. Filters and export are grouped with the scan table.
+- A named location enables trends, and two selected scans can be compared in a keyboard-accessible dialog.
+- The initial release has shared access without login, pending the paper's requirements.
+- Empty, unavailable, missing-data, and unvalidated-advisor states are explicit.
+- Browser verification uses synthetic measurements in an isolated local test database, separately from live setup.

@@ -1,6 +1,6 @@
 # SoilSense dashboard plan
 
-Status: Planned
+Status: Implemented in the web application; live database setup requires a successful connection.
 Agreed: 9 November 2026
 
 Visual direction: [UI design plan](UI_DESIGN_PLAN.md).
@@ -13,7 +13,7 @@ Make the latest scan and previous scans easy to review. Keep the interface compa
 
 1. Header with last-upload status.
 2. Last scan and its sensor readings.
-3. One trend chart, added after the first version.
+3. One location-specific trend chart with a metric switch.
 4. Scan history with date filters, search, and export.
 
 The last-scan section shows the latest known scan independently of the history filters. History and trends share the selected period and location filters.
@@ -83,20 +83,25 @@ The last-scan section shows the latest known scan independently of the history f
 4. Last-upload status.
 5. CSV export.
 
-### Later additions
+### Included additions
 
-1. Trend chart once enough comparable readings are available.
-2. Two-scan comparison.
-3. Fertilizer advice after model training and validation.
+1. Trend chart for a named location, using its latest 200 dated scans matching the filters.
+2. Two-scan comparison with reading units and timestamps.
 
-## Implementation decisions to settle
+### Research dependency
 
-- How sampling locations are assigned and stored; the current reading schema has no location field.
-- How date filters handle records whose scan time is unknown, without silently treating upload time as scan time.
-- Whether the initial account scope is the research team or individual farmers with their own devices.
+Fertilizer advice remains unavailable until model training and validation are complete.
+
+## Implementation decisions
+
+- Sampling location is an optional field in the device payload, stored with each scan. Existing records without locations remain valid.
+- Date filters explicitly choose scan time or upload time. Unknown scan times appear in All and can be found using upload-time filters.
+- Dates use Philippine time (UTC+8), and rolling periods include today.
+- There is no login until the paper's account requirements are confirmed. The server only displays devices explicitly listed in `WORKSPACE_DEVICE_IDS`.
+- Last scan prioritizes known measurement time, then upload time for undated records. It remains independent of history filters.
 
 ## First milestone
 
-One signed-in user, one assigned device, and one test reading uploaded to a development database and displayed only to its owner.
+One configured device and one acknowledged test reading displayed in the shared research dashboard. Automated full-stack tests exercise this with an isolated local database. Live setup still requires valid database authentication.
 
 See the [system setup](../../../docs/SYSTEM_SETUP.md) for the device upload flow, database setup, and implementation boundaries.

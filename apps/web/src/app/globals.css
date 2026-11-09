@@ -1,26 +1,27 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "./styles/shell.css";
 @import "./styles/dashboard.css";
+@import "./styles/controls.css";
+@import "./styles/details.css";
 @import "./styles/responsive.css";
 
-:root {
-  --background: #f7f8fa;
-  --surface: #ffffff;
-  --foreground: #252c29;
-  --muted: #6d766e;
-  --line: #e8ebe7;
-  --green: #365d47;
-  --green-soft: #edf2ed;
-}
-
+:root { --background: #f6f9f6; --surface: #fff; --foreground: #24352b; --muted: #69776e; --line: #e2e9e2; --green: #173f35; --green-soft: #eaf4ec; }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 28px; }
+html { scroll-behavior: smooth; scroll-padding-top: 22px; }
 body { margin: 0; background: var(--background); color: var(--foreground); font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, figure { margin: 0; }
 a { color: inherit; text-decoration: none; }
-button, summary, a { -webkit-tap-highlight-color: transparent; }
-a, summary { touch-action: manipulation; }
-a:focus-visible, summary:focus-visible { outline: 2px solid var(--green); outline-offset: 5px; border-radius: 4px; }
-h1, h2, h3, p { margin: 0; }
-.icon { width: 20px; height: 20px; flex-shrink: 0; }
+button, input, select { font: inherit; }
+button, a, summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button, summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #438a67; outline-offset: 4px; }
+.icon { width: 19px; height: 19px; flex-shrink: 0; }
 .sr-only, .skip-link:not(:focus) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-.skip-link:focus { position: fixed; top: 12px; left: 12px; z-index: 10; padding: 12px 20px; background: var(--surface); }
+.skip-link:focus { position: fixed; top: 12px; left: 12px; z-index: 20; padding: 12px 20px; background: white; }
+.muted { color: var(--muted); }
+.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+small { font-size: 12px; }
+code { font-size: 12px; overflow-wrap: anywhere; }
+pre { background: #f2f6f1; border: 1px solid var(--line); padding: 16px; border-radius: 6px; overflow-x: auto; line-height: 1.8; }
+pre code { white-space: pre; overflow-wrap: normal; }
