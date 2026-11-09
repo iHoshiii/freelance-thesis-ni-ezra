@@ -1,4 +1,12 @@
 const paths = {
+  location: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" /><circle cx="12" cy="10" r="2" /></>,
+  search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></>,
+  download: <><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></>,
+  compare: <><path d="M8 3v18M16 3v18M4 7l4-4 4 4M12 17l4 4 4-4" /></>,
+  close: <path d="m6 6 12 12M6 18 18 6" />,
+  refresh: <><path d="M20 7v5h-5M4 17v-5h5" /><path d="M6 6a8 8 0 0 1 13 2M5 16a8 8 0 0 0 13 2" /></>,
+  trend: <><path d="M3 3v18h18M7 15l4-5 4 2 6-8" /></>,
+  check: <path d="m5 12 4 4L19 6" />,
   grid: <><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></>,
   history: <><path d="M3 11a9 9 0 1 1 2.6 7M3 4v7h7" /><path d="M12 7v5l3 2" /></>,
   sprout: <><path d="M12 21v-9M12 16C6 16 3 13 3 8c6 0 9 3 9 8ZM12 12c0-6 3-9 9-9 0 6-3 9-9 9Z" /><path d="M6 21h12" /></>,
