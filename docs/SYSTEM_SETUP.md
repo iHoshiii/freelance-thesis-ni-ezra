@@ -9,6 +9,7 @@ This is a development starter for the current proposal, not a completed or valid
 | Browser application and receiving API | Next.js App Router, React, TypeScript | One application for responsive pages and HTTP endpoints. |
 | Styling | Tailwind CSS | Responsive layouts without a separate design framework. |
 | Database and eventual user login | Supabase PostgreSQL and Auth | Relational sample history, ownership policies, and managed authentication. |
+| Server database access | Prisma ORM 7 with the PostgreSQL adapter | Typed models for existing tables and parameterized calls to the atomic upload function. |
 | Device transport | HTTPS JSON with per-device bearer tokens | Straightforward acknowledged uploads; no MQTT broker needed for the prototype. |
 | Device firmware | Arduino C++ under PlatformIO | ESP32 development and reproducible dependency configuration. |
 | Later model training | Python and scikit-learn | Fits the proposed decision-tree baseline and evaluation workflow. Add an authenticated Python inference service only after a model is trained and validated. |
@@ -33,11 +34,11 @@ Checks: `npm test`, `npm run typecheck`, and `npm run build` from `apps/web`.
 
 1. Create your own Supabase project, or use a local Supabase instance.
 2. Apply `supabase/migrations/202611040001_initial.sql` using the SQL editor or your migration workflow. It has not been applied automatically.
-3. Copy `apps/web/.env.example` to `apps/web/.env.local`; supply the project URL and server-only service-role key. Never put that key in the ESP32 or a `NEXT_PUBLIC_` variable.
+3. Add `DATABASE_URL` to `apps/web/.env` or `.env.local` using `.env.example`. Supply the Supabase PostgreSQL connection string, including the database password. Optionally set `DIRECT_URL` to the direct or session-pooler URL for Prisma CLI commands. Run `npm run db:generate` and `npm run db:validate` from `apps/web`. Database credentials belong only on the server, never in the ESP32 or a `NEXT_PUBLIC_` variable.
 4. Provision an Auth user, then a device row with that user's ID, a device identifier, and a SHA-256 hash of a unique cryptographically random device token (at least 32 random bytes). Provisioning is an administrator operation; no public device registration endpoint exists.
 5. Use the raw device token only in that device's configuration and send it as `Authorization: Bearer <token>`. The database stores its hash. Use HTTPS outside isolated local development.
 
-Browser roles can only read rows belonging to their signed-in user; they cannot insert measurements or read device token hashes. The receiving API authenticates the device before using a restricted database function. Supabase credentials alone do not complete the user-facing login and private dashboard integration.
+Browser roles can only read rows belonging to their signed-in user; they cannot insert measurements or read device token hashes. The receiving API uses Prisma to authenticate the device before calling the restricted database function with bound parameters. The Prisma database role must have the required table and function privileges. The SQL migration remains responsible for ownership, row policies, checks, and atomic ingestion. Database configuration alone does not complete user login or private dashboard reads.
 
 ## Device record contract
 
