@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Device {
+  id            String    @id
+  ownerId       String?   @map("owner_id") @db.Uuid
+  label         String
+  tokenHash     String    @unique @map("token_hash")
+  lastContactAt DateTime? @map("last_contact_at") @db.Timestamptz(6)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  readings      Reading[]
+
+  @@map("devices")
+}
+
+model Reading {
+  deviceId        String    @map("device_id")
+  recordId        String    @map("record_id") @db.Uuid
+  sampleId        String    @map("sample_id")
+  location        String?
+  acquiredAt      DateTime? @map("acquired_at") @db.Timestamptz(6)
+  timeQuality     String    @map("time_quality")
+  receivedAt      DateTime  @default(now()) @map("received_at") @db.Timestamptz(6)
+  ph              Float?
+  moisturePercent Float?    @map("moisture_percent")
+  temperatureC    Float?    @map("temperature_c")
+  npkRaw          Json?     @map("npk_raw")
+  payload         Json
+  device          Device    @relation(fields: [deviceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([deviceId, recordId])
+  @@index([deviceId, receivedAt(sort: Desc)], map: "readings_received_at_idx")
+  @@index([deviceId, location, acquiredAt(sort: Desc)], map: "readings_location_acquired_idx")
+  @@map("readings")
+}
