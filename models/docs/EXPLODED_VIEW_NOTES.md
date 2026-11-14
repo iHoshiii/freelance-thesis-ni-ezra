@@ -1,6 +1,6 @@
 ﻿# Labeled exploded view
 
-Open soil_analyzer_exploded_labeled.blend.
+Open `blend-files/soil_analyzer_exploded_labeled.blend`.
 
 - Scene 03 Exploded and labeled parts shows the opened enclosure and separated components.
 - Scene 04 Labeled component reference shows each numbered component without occlusion.

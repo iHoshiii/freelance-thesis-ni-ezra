@@ -10,6 +10,7 @@ import { ScanFilterControls } from "./scan-filters";
 import { ScanHistory } from "./scan-history";
 import { TrendChart } from "./trend-chart";
 import { Icon } from "./dashboard-icon";
+import { PanelSwitch } from "./panel-switch";
 
 export async function WorkspaceDashboard({ searchParams, scansOnly = false }: {
   searchParams: Promise<SearchParams>; scansOnly?: boolean;
@@ -22,12 +23,12 @@ export async function WorkspaceDashboard({ searchParams, scansOnly = false }: {
   const data = await loadWorkspace(filters);
   const path = scansOnly ? "/scans" : "/";
   const ready = data.status === "ready";
+  const controls = <ScanFilterControls filters={filters} locations={data.locations} path={path} today={localDay()} />;
+  const history = <ScanHistory key={JSON.stringify(filters)} scans={filterError ? [] : data.scans} total={filterError ? 0 : data.total} filters={filters} path={path} ready={ready} controls={controls} />;
   return <WorkspaceShell current={path} title={scansOnly ? "Scans" : "Overview"} lastUpload={data.lastUpload}>
-    <div className="page-heading"><div><p className="eyebrow">SOIL MONITORING</p><h1>{scansOnly ? "Your scans" : "Soil overview"}</h1><p>{scansOnly ? "A record of every measurement." : "Your soil, one scan at a time."}</p></div><span className="workspace-badge"><span className="status-dot" />Research workspace</span></div>
-    {data.status !== "ready" && <div className={`notice ${data.status === "unavailable" ? "notice-warning" : ""}`} role="status"><Icon name="info" /><div><strong>{data.status === "unavailable" ? "Scans are temporarily unavailable" : "Ready for your first field unit"}</strong><span>{data.status === "unavailable" ? "Check the database connection and setup steps." : "Complete device setup to start receiving scans."}</span></div><Link href="/setup">Open setup <Icon name="arrow" /></Link></div>}
+    {data.status !== "ready" && <div className={`notice ${data.status === "unavailable" ? "notice-warning" : ""}`} role="status"><Icon name="info" /><strong>{data.status === "unavailable" ? "Database unavailable" : "Device setup needed"}</strong><Link href="/setup">Open setup <Icon name="arrow" /></Link></div>}
     {filterError && <div className="notice notice-warning" role="alert"><Icon name="info" /><span>{filterError}</span><Link href={path}>Reset filters</Link></div>}
     {!scansOnly && <LatestScan scan={data.latest} />}
-    {ready && filters.location && filters.location !== "__unassigned" && <TrendChart scans={filterError ? [] : data.trend} location={filters.location} />}
-    <ScanHistory scans={filterError ? [] : data.scans} total={filterError ? 0 : data.total} filters={filters} path={path} ready={ready} controls={<ScanFilterControls filters={filters} locations={data.locations} path={path} today={localDay()} />} />
+    {ready && filters.location && filters.location !== "__unassigned" ? <PanelSwitch labels={["Scans", "Trends"]}>{[history, <TrendChart key="trend" scans={filterError ? [] : data.trend} location={filters.location} />]}</PanelSwitch> : history}
   </WorkspaceShell>;
 }

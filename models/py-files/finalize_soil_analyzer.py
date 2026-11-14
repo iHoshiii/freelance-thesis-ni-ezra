@@ -64,7 +64,7 @@ if internal_name not in bpy.data.scenes:
     internal_scene.render.resolution_y = 1100
     internal_scene.render.resolution_percentage = 100
     internal_scene.render.image_settings.file_format = assembly_scene.render.image_settings.file_format
-    internal_scene.render.filepath = os.path.join(model_dir,'soil_analyzer_internal_layout.png')
+    internal_scene.render.filepath = os.path.join(model_dir,'images','soil_analyzer_internal_layout.png')
     internal_scene.view_settings.view_transform = assembly_scene.view_settings.view_transform
     internal_scene.view_settings.exposure = assembly_scene.view_settings.exposure
     internal_scene['note'] = 'Conceptual packaging only; dimensions, interconnects, ratings and board choices require engineering.'
@@ -84,9 +84,9 @@ assembly_scene.render.resolution_percentage = 100
 if hasattr(assembly_scene,'eevee'):
     for prop in ['taa_render_samples','taa_samples']:
         if hasattr(assembly_scene.eevee,prop):setattr(assembly_scene.eevee,prop,32)
-assembly_scene.render.filepath = os.path.join(model_dir,'soil_analyzer_proposed_design.png')
+assembly_scene.render.filepath = os.path.join(model_dir,'images','soil_analyzer_proposed_design.png')
 for selected_obj in bpy.context.selected_objects:selected_obj.select_set(False)
 bpy.context.view_layer.objects.active = None
-bpy.ops.wm.save_as_mainfile(filepath=os.path.join(model_dir,'soil_analyzer_proposed.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(model_dir,'blend-files','soil_analyzer_proposed.blend'))
 print('Saved final assembly and internal view:',bpy.data.filepath)
 print('Scenes:', [s.name for s in bpy.data.scenes])

@@ -22,4 +22,4 @@ The revised proposal uses a plain enclosure with a flat solar panel, simple cabl
 
 The enclosure is approximately 204 × 144 × 83 mm including its cover; the panel is approximately 164 × 110 mm. These dimensions are illustrative. Purchased-part dimensions, electrical ratings, charger suitability, battery arrangement, probe validation and enclosure sealing remain to be confirmed. This is a proposed appearance and packaging model, not fabrication CAD or a wiring diagram.
 
-Open `soil_analyzer_simplified.blend`. Scene **01 Simplified soil analyzer** shows the assembly; scene **02 Simplified internal arrangement** shows the conceptual component layout. The earlier design remains in `soil_analyzer_proposed.blend`.
+Open `blend-files/soil_analyzer_simplified.blend`. Scene **01 Simplified soil analyzer** shows the assembly; scene **02 Simplified internal arrangement** shows the conceptual component layout. The earlier design remains in `blend-files/soil_analyzer_proposed.blend`.

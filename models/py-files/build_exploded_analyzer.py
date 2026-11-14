@@ -1,5 +1,5 @@
 """Explode the saved simplified proposal into labeled, individually editable parts.
-Run with Blender: --background soil_analyzer_simplified.blend --python this_file.
+Run from models: blender --background blend-files/soil_analyzer_simplified.blend --python py-files/build_exploded_analyzer.py
 """
 import bpy
 import math
@@ -159,7 +159,7 @@ scene.render.engine=source.render.engine
 scene.render.resolution_x=2200;scene.render.resolution_y=1800;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format=source.render.image_settings.file_format
 scene.render.film_transparent=False
-scene.render.filepath=os.path.join(OUT,'soil_analyzer_exploded_labeled.png')
+scene.render.filepath=os.path.join(OUT,'images','soil_analyzer_exploded_labeled.png')
 scene.view_settings.view_transform=source.view_settings.view_transform
 # Dynamic OCIO enum reports only NONE through RNA; Standard was verified through runtime validation.
 scene.view_settings.view_transform='Standard'
@@ -273,7 +273,7 @@ atlas_cam.location=(0,0,1.8);atlas_cam.rotation_euler=(0,0,0)
 atlas_cam_data.type=data.type;atlas_cam_data.ortho_scale=.94;atlas.camera=atlas_cam
 atlas.render.engine=scene.render.engine;atlas.render.resolution_x=2200;atlas.render.resolution_y=2000;atlas.render.resolution_percentage=100
 atlas.render.image_settings.file_format=scene.render.image_settings.file_format
-atlas.render.filepath=os.path.join(OUT,'soil_analyzer_parts_reference.png')
+atlas.render.filepath=os.path.join(OUT,'images','soil_analyzer_parts_reference.png')
 atlas.view_settings.view_transform=scene.view_settings.view_transform;atlas.view_settings.exposure=0
 if hasattr(atlas,'eevee'):atlas.eevee.taa_render_samples=16
 for obj in studio.objects:
@@ -340,7 +340,7 @@ notes.write('Open scene 03 Exploded and labeled parts for the presentation view.
 assert len(groups)==22
 assert len([o for o in labels.objects if o.name.startswith('Label ')])==22
 with open(os.path.join(OUT,'exploded_parts_index.json'),'w',encoding='utf-8') as file:json.dump(sorted(layout,key=lambda d:d['number']),file,indent=2)
-target=os.path.join(OUT,'soil_analyzer_exploded_labeled.blend')
+target=os.path.join(OUT,'blend-files','soil_analyzer_exploded_labeled.blend')
 bpy.ops.wm.save_as_mainfile(filepath=target,compress=True)
 print('Saved exploded proposal:',target,flush=True)
 print('Labeled component groups:',len(groups),flush=True)
@@ -353,7 +353,7 @@ if os.environ.get('ANALYZER_FINAL_RENDER')=='1':
     print('Final component reference rendered.',flush=True)
 else:
     scene.render.resolution_percentage=55
-    scene.render.filepath=os.path.join(OUT,'exploded_layout_check.png')
+    scene.render.filepath=os.path.join(OUT,'images','exploded_layout_check.png')
     if hasattr(scene,'eevee'):scene.eevee.taa_render_samples=8
     bpy.ops.render.render(write_still=True)
     print('Draft overview rendered.',flush=True)
