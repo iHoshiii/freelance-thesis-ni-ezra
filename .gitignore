@@ -2,7 +2,7 @@
 *.blend[0-9]*
 
 # Local render checks and completion markers
-/models/exploded_layout_check.png
+/models/images/exploded_layout_check.png
 /models/render_complete.txt
 /models/*_render_complete.txt
 
