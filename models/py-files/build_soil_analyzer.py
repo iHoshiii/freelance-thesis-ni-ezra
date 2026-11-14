@@ -315,7 +315,7 @@ scene.render.resolution_x=1800
 scene.render.resolution_y=1400
 scene.render.resolution_percentage=100
 scene.render.image_settings.file_format=next(i.identifier for i in scene.render.image_settings.bl_rna.properties['file_format'].enum_items if i.identifier=='PNG')
-scene.render.filepath=os.path.join(ROOT,'soil_analyzer_proposed_design.png')
+scene.render.filepath=os.path.join(ROOT,'images','soil_analyzer_proposed_design.png')
 scene.render.film_transparent=False
 scene.render.engine=bpy.data.scenes['Scene'].render.engine
 if hasattr(scene,'eevee'):
@@ -338,7 +338,7 @@ bpy.context.view_layer.objects.active=None
 
 notes=bpy.data.texts.new('READ ME - proposed design assumptions')
 notes.write('HYBRID MULTI-SENSOR SOIL ANALYZER\nBased on docs/paper_revised.docx.\n\nConcept geometry, not a manufacturing drawing.\nEnclosure envelope including cover: 304 x 224 x 157 mm; excludes feet, solar panel, handle and accessories. Mechanical sizes, solar area, cup holder, handle and connector layout are design assumptions.\nESP32, capacitive moisture sensor and DS18B20 follow the proposed components in the thesis.\npH electrode measures a prepared soil-water suspension in the side cup.\nNPK probe is provisional and requires feasibility checks against matching laboratory measurements.\nBattery capacity, PV rating, waterproofing and electrical compatibility remain to be engineered.\nLocal LEDs and service layout are conceptual additions. Browser dashboard and fertilizer advice run on an external computer or mobile device, not on the box.\nCollections 01 and 02 can be hidden to inspect the conceptual internal arrangement.\nThe original scene is retained separately.\n')
-exec(compile(open(os.path.join(ROOT,'finalize_soil_analyzer.py'), encoding='utf-8').read(), 'finalize_soil_analyzer.py', 'exec'))
+exec(compile(open(os.path.join(ROOT,'py-files','finalize_soil_analyzer.py'), encoding='utf-8').read(), 'finalize_soil_analyzer.py', 'exec'))
 print('Created',len(scene.objects),'objects in',scene.name)
 print('Saved',bpy.data.filepath)
 print('Ready to render:',scene.render.filepath)

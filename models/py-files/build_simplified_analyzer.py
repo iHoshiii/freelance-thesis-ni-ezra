@@ -193,7 +193,7 @@ simple.camera=cam
 # New scenes use this Blender installation's default render engine.
 simple.render.resolution_x=1500;simple.render.resolution_y=1050;simple.render.resolution_percentage=100
 simple.render.image_settings.file_format=next(e.identifier for e in simple.render.image_settings.bl_rna.properties['file_format'].enum_items if e.identifier=='PNG')
-simple.render.filepath=os.path.join(OUT,'soil_analyzer_simplified.png')
+simple.render.filepath=os.path.join(OUT,'images','soil_analyzer_simplified.png')
 if hasattr(simple,'eevee'):simple.eevee.taa_render_samples=16
 if 'AgX' in [e.identifier for e in simple.view_settings.bl_rna.properties['view_transform'].enum_items]:simple.view_settings.view_transform='AgX'
 simple.view_settings.exposure=-.4
@@ -222,7 +222,7 @@ for screen in bpy.data.screens:
             area.spaces.active.region_3d.view_distance=.65
 
 # Save normally: partial-library scene export crashes this Blender release candidate.
-target_path=os.path.join(OUT,'soil_analyzer_simplified.blend')
+target_path=os.path.join(OUT,'blend-files','soil_analyzer_simplified.blend')
 notes.use_fake_user=True
 for prior_scene in list(bpy.data.scenes):
     if prior_scene not in (simple,internal):bpy.data.scenes.remove(prior_scene)

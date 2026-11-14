@@ -4,6 +4,7 @@
 @import "./styles/controls.css";
 @import "./styles/details.css";
 @import "./styles/responsive.css";
+@import "./styles/viewport.css";
 
 :root { --background: #f6f9f6; --surface: #fff; --foreground: #24352b; --muted: #69776e; --line: #e2e9e2; --green: #173f35; --green-soft: #eaf4ec; }
 * { box-sizing: border-box; }

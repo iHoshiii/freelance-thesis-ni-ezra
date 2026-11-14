@@ -4,6 +4,7 @@ const paths = {
   download: <><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></>,
   compare: <><path d="M8 3v18M16 3v18M4 7l4-4 4 4M12 17l4 4 4-4" /></>,
   close: <path d="m6 6 12 12M6 18 18 6" />,
+  menu: <path d="M4 6h16M4 12h16M4 18h16" />,
   refresh: <><path d="M20 7v5h-5M4 17v-5h5" /><path d="M6 6a8 8 0 0 1 13 2M5 16a8 8 0 0 0 13 2" /></>,
   trend: <><path d="M3 3v18h18M7 15l4-5 4 2 6-8" /></>,
   check: <path d="m5 12 4 4L19 6" />,

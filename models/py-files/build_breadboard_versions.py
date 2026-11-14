@@ -1,6 +1,6 @@
 """Create one exposed breadboard proposal from the saved labeled parts.
 
-Blender CLI: --background soil_analyzer_exploded_labeled.blend --python this.py -- --variant compact
+From models: blender --background blend-files/soil_analyzer_exploded_labeled.blend --python py-files/build_breadboard_versions.py -- --variant compact
 Use scattered for the second variant. Source files are preserved.
 """
 import bpy
@@ -195,7 +195,7 @@ scene.render.resolution_percentage=100;scene.render.image_settings.file_format=i
 scene.render.film_transparent=False
 scene.view_settings.view_transform=view_transform;scene.view_settings.exposure=0
 if hasattr(scene,'eevee'):scene.eevee.taa_render_samples=16
-scene.render.filepath=os.path.join(OUT,'soil_analyzer_breadboard_'+variant+'.png')
+scene.render.filepath=os.path.join(OUT,'images','soil_analyzer_breadboard_'+variant+'.png')
 
 if variant=='compact':
     target=Vector((.015,.05,.035));cam.location=(.36,-.60,.95);aim(cam,target);cd.ortho_scale=.68
@@ -270,7 +270,7 @@ for f in [regular,bold]:
 assert len(groups)==19 and len(bpy.data.scenes)==1
 assert len([o for o in labels.objects if o.name.startswith('Component label ')])==19
 assert not any(any(word in o.name.lower() for word in ['perfboard','enclosure','removable lid','microsd','gps','rtc']) for o in scene.objects)
-file_path=os.path.join(OUT,'soil_analyzer_breadboard_'+variant+'.blend')
+file_path=os.path.join(OUT,'blend-files','soil_analyzer_breadboard_'+variant+'.blend')
 bpy.ops.wm.save_as_mainfile(filepath=file_path,compress=True)
 print('Saved',variant,':',file_path,flush=True)
 print('19 labeled groups; 830 breadboard socket marks; no enclosure, cover or perfboard.',flush=True)
