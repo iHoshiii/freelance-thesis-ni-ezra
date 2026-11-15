@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { loadWorkspace } from "@/lib/scans/repository";
-import { defaultFilters, parseFilters } from "@/lib/scans/filters";
+import { defaultFilters, parseFilters, filterQuery } from "@/lib/scans/filters";
 import { localDay } from "@/lib/scans/dates";
 import type { SearchParams } from "@/lib/scans/types";
 import { WorkspaceShell } from "./workspace-shell";
@@ -28,7 +28,8 @@ export async function WorkspaceDashboard({ searchParams, scansOnly = false }: {
   return <WorkspaceShell current={path} title={scansOnly ? "Scans" : "Overview"} lastUpload={data.lastUpload}>
     {data.status !== "ready" && <div className={`notice ${data.status === "unavailable" ? "notice-warning" : ""}`} role="status"><Icon name="info" /><strong>{data.status === "unavailable" ? "Database unavailable" : "Device setup needed"}</strong><Link href="/setup">Open setup <Icon name="arrow" /></Link></div>}
     {filterError && <div className="notice notice-warning" role="alert"><Icon name="info" /><span>{filterError}</span><Link href={path}>Reset filters</Link></div>}
-    {!scansOnly && <LatestScan scan={data.latest} />}
+    <LatestScan scan={data.latest} />
+    <div className="scan-period-tabs" aria-label="Quick scan periods">{([['7d', 'Last 7 days'], ['30d', 'Last 30 days'], ['all', 'All time']] as const).map(([period, label]) => <Link key={period} scroll={false} href={`${path}?${filterQuery(filters, { period, page: 1, from: "", to: "" })}`} aria-current={filters.period === period ? "true" : undefined}>{label}</Link>)}</div>
     {ready && filters.location && filters.location !== "__unassigned" ? <PanelSwitch labels={["Scans", "Trends"]}>{[history, <TrendChart key="trend" scans={filterError ? [] : data.trend} location={filters.location} />]}</PanelSwitch> : history}
   </WorkspaceShell>;
 }
