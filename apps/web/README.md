@@ -13,6 +13,8 @@ npm run dev
 
 Open http://localhost:3000. Without database configuration, the dashboard stays empty and links to `/setup`. It never generates sample measurements.
 
+On Windows, `npm run dev` keeps Next.js and its workers tied to the launching terminal. Press Ctrl+C or close/delete that PowerShell terminal to stop the whole dev server and release its port. Extra Next.js options still work, for example `npm run dev -- --port 3002`.
+
 ## Database and device setup
 
 Use `.env.example` as a reference and configure your own `.env` or `.env.local`:
@@ -61,6 +63,7 @@ Use SQL migrations for schema changes. `prisma db push` does not manage Supabase
 
 ```powershell
 npm test
+npm run test:dev
 npm run lint
 npm run typecheck
 npm run build
