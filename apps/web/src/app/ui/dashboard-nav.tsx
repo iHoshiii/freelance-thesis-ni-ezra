@@ -8,5 +8,5 @@ export function DashboardNav({ current }: { current: string }) {
     { href: "/devices", label: "Devices", icon: "device" },
     { href: "/setup", label: "Setup", icon: "info" },
   ] as const;
-  return <nav aria-label="Main navigation">{items.map((item) => <Link key={item.href} href={item.href} aria-current={current === item.href ? "page" : undefined}><Icon name={item.icon} /><span>{item.label}</span></Link>)}</nav>;
+  return <nav aria-label="Main navigation">{items.map((item) => <Link key={item.href} href={item.href} aria-label={item.label} title={item.label} aria-current={current === item.href ? "page" : undefined}><Icon name={item.icon} /><span className="nav-text">{item.label}</span></Link>)}</nav>;
 }
