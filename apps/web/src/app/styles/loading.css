@@ -18,10 +18,19 @@
 .skeleton-chart-row { display: grid; grid-template-columns: 90px minmax(0, 1fr); align-items: center; gap: 20px; }
 .skeleton-chart-row > .skeleton-bone:last-child { height: 16px; }
 .skeleton-sensors { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; padding-block: 8px; }
+.skeleton-section { display: flex; flex-direction: column; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.skeleton-section .skeleton-metrics { padding: 0; }
+.skeleton-connections { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.skeleton-connections > div, .skeleton-sensors > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.skeleton-latest { display: flex; align-items: center; gap: 20px; padding-block: 8px; }
+.skeleton-latest > :last-child { margin-left: auto; }
+.skeleton-guidance-row { display: flex; flex-direction: column; gap: 12px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.skeleton-guidance-row > div { display: flex; align-items: center; justify-content: space-between; }
 .query-feedback { font-size: 11px; gap: 8px; }
-.query-feedback small { display: block; font-size: 10px; margin-top: 3px; }
 .query-feedback .button { flex-shrink: 0; margin-left: auto; background: white; }
-.query-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; }
+.query-empty { display: flex; flex: 1; flex-direction: column; align-items: flex-start; justify-content: center; gap: 12px; }
+.query-empty h2 { font-size: 16px; font-weight: 500; }
+.query-empty-actions { display: flex; align-items: center; gap: 20px; margin-top: 8px; }
 .query-empty p { max-width: 45ch; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .query-activity { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; color: var(--muted); font-size: 10px; }
 .query-activity .icon { width: 12px; height: 12px; }
@@ -43,7 +52,13 @@
   .skeleton-guidance { gap: 10px; }
   .skeleton-statistics { gap: 20px; }
   .skeleton-chips { gap: 8px; }
-  .skeleton-table-row { padding: 18px 12px; }
+  .skeleton-section { gap: 18px; padding-bottom: 18px; }
+  .skeleton-connections { gap: 16px; }
+  .skeleton-connections > div { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .skeleton-guidance-row { padding-block: 16px; }
+  .skeleton-latest { gap: 12px; }
+  .skeleton-table-row { padding: 0 12px; min-height: 28px; }
+  .skeleton-table-row:nth-last-child(-n+2) { display: none; }
   .query-activity { font-size: 9px; }
   .upload-status:has(.query-activity) > span:not(.query-activity) { display: none; }
 }

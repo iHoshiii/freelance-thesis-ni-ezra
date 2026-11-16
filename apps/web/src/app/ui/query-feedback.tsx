@@ -6,17 +6,18 @@ import { PageSkeleton } from "./page-skeleton";
 import { useOnlineStatus } from "./use-online-status";
 
 type QueryState = Pick<UseQueryResult, "isError" | "isPending" | "isPaused" | "dataUpdatedAt" | "error" | "refetch" | "isFetching">;
-export function QueryFeedback({ query, cached = true }: { query: QueryState; cached?: boolean }) {
+export function QueryFeedback({ query }: { query: QueryState }) {
   const offline = !useOnlineStatus() || query.isPaused;
   if (!query.isError && !offline) return null;
-  return <div className="notice notice-warning query-feedback" role="status">
-    <span>{offline ? "You're offline." : "Could not update this page."}{cached ? " Showing saved data." : " Check your connection and retry."}{cached && query.dataUpdatedAt > 0 && <small>Last loaded {new Date(query.dataUpdatedAt).toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" })}</small>}</span>
-    <button type="button" className="button button-small" disabled={query.isFetching || offline} onClick={() => void query.refetch()}>Retry</button>
+  const loadedAt = query.dataUpdatedAt > 0 ? new Date(query.dataUpdatedAt).toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" }) : null;
+  return <div className="notice notice-warning query-feedback" role="status" title={loadedAt ? `Last loaded ${loadedAt}` : undefined}>
+    <span>{offline ? "You're offline." : "Update failed."} Showing saved data.</span>
+    {!offline && <button type="button" className="button button-small" disabled={query.isFetching} onClick={() => void query.refetch()}>Retry</button>}
   </div>;
 }
 
 export function QueryPlaceholder({ query, title }: { query: QueryState; title: string }) {
   const offline = !useOnlineStatus() || query.isPaused;
   if (query.isPending && !offline) return <PageSkeleton title={title} />;
-  return <><QueryFeedback query={query} cached={false} /><section className="panel query-empty"><h2>{offline ? "Waiting for a connection" : "Data unavailable"}</h2><p>{query.error?.message ?? "This page will update when your connection returns."}</p><Link className="text-link" href="/status">Open connection status</Link></section></>;
+  return <section className="query-empty" role="status"><h2>{offline ? "Offline" : "Data unavailable"}</h2><p>{offline ? "Reconnect to load this page." : query.error?.message ?? "Try again."}</p><div className="query-empty-actions"><button type="button" className="button button-primary" disabled={query.isFetching || offline} onClick={() => void query.refetch()}>Retry</button><Link className="text-link" href="/status">Status</Link></div></section>;
 }
