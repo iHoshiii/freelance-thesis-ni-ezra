@@ -15,9 +15,11 @@ export default function Recommendations() {
   if (!query.data) return <WorkspaceShell current="/recommendations" title="Recommendations"><QueryPlaceholder query={query} title="Recommendations" /></WorkspaceShell>;
   const data = query.data.workspace;
   const scan = data.latest;
+  const hasReadings = scan && [scan.ph, scan.moisturePercent, scan.temperatureC, scan.npkRaw].some((value) => value != null);
   return <WorkspaceShell current="/recommendations" title="Recommendations" lastUpload={data.lastUpload}><QueryFeedback query={query} />
     {scan && <div className="overview-heading"><span className="muted">{scan.location ?? "Unassigned"} · {formatDate(scan.acquiredAt, true)}</span><Link className="text-link" href={scanHref(scan)}>View scan <Icon name="arrow" /></Link></div>}
-    {data.status === "unavailable" && <div className="notice notice-warning" role="status">Scan records unavailable. Check the database in Status.</div>}
-    <div className="guidance-grid">{soilGuidance(scan).map((item) => <section className="guidance-card" key={item.key}><div className="guidance-title"><h2>{item.title}</h2><strong>{item.key === "npk" && scan?.npkRaw ? `${scan.npkRaw.n} / ${scan.npkRaw.p} / ${scan.npkRaw.k}` : item.value == null ? "--" : `${formatValue(item.value)} ${item.unit}`}</strong></div>{item.status && <span className="guidance-state">{item.status}</span>}{item.action && <p>{item.action}</p>}</section>)}</div>
+    {data.status === "unavailable" ? <div className="notice notice-warning" role="status"><span>Scan records unavailable.</span><Link href="/status">Status <Icon name="arrow" /></Link></div>
+      : <section className="guidance-grid recommendations" aria-label="Soil recommendations">{hasReadings ? soilGuidance(scan).map((item) => <article className="recommendation-row" key={item.key}><div className="recommendation-name"><h2>{item.title}</h2>{item.status && <span>{item.status}</span>}</div><div className="recommendation-value"><strong>{item.key === "npk" && scan?.npkRaw ? `${scan.npkRaw.n} / ${scan.npkRaw.p} / ${scan.npkRaw.k}` : item.value == null ? "--" : formatValue(item.value)}</strong>{item.value != null && <small>{item.unit}</small>}</div>{item.action && <p>{item.action}</p>}</article>)
+        : <div className="recommendations-empty"><span className="recommendations-symbol"><Icon name="sprout" /></span><h2>{scan ? "This scan has no sensor data" : "No recommendations yet"}</h2><Link className="text-link" href={data.status === "setup" ? "/setup" : "/scans"}>{data.status === "setup" ? "Set up device" : "View scans"} <Icon name="arrow" /></Link></div>}</section>}
   </WorkspaceShell>;
 }

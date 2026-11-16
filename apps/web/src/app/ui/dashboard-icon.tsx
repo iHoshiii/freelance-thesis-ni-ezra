@@ -1,4 +1,9 @@
 const paths = {
+  settings: <><path d="m9 3-.5 2-2 1-2-.5L3 9l1.5 1.5v3L3 15l1.5 3.5 2-.5 2 1 .5 2h6l.5-2 2-1 2 .5L21 15l-1.5-1.5v-3L21 9l-1.5-3.5-2 .5-2-1-.5-2Z" /><circle cx="12" cy="12" r="3" /></>,
+  help: <><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .6-1.5 1-1.5 2M12 17h.01" /></>,
+  guide: <><path d="M12 5C9 3 5 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-2-1-6-1-9 1Zm0 0v15" /><path d="M6 8h3M6 12h3M15 8h3M15 12h3" /></>,
+  logout: <><path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5M10 12h11m-4-4 4 4-4 4" /></>,
+  image: <><rect x="3" y="3" width="18" height="18" rx="4" /><circle cx="8" cy="8" r="1.5" /><path d="m4 16 5-5 4 4 3-3 5 5" /></>,
   location: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" /><circle cx="12" cy="10" r="2" /></>,
   search: <><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 5 5" /></>,
   download: <><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" /></>,

@@ -28,7 +28,7 @@ test("status checks the real server and database and handles a lost server", asy
   await page.route("**/api/health", (route) => route.abort());
   await page.goto("/status");
   await expect(page.getByRole("region", { name: "Connection health" })).toContainText("Cannot reach server");
-  await expect(page.getByRole("region", { name: "Device monitor" }).locator(".sensor-row").first()).toContainText("--");
+  await expect(page.getByRole("region", { name: "Device monitor" }).locator('[data-callout="ph"]')).toContainText("--");
 });
 
 test("device heartbeat requires authentication and drives battery, queue and sensor health", async ({ page }) => {
@@ -44,8 +44,8 @@ test("device heartbeat requires authentication and drives battery, queue and sen
   await expect(monitor).toContainText("Syncing");
   await expect(monitor.locator(".monitor-metrics > div").first()).toContainText("4");
   await page.getByRole("navigation").getByRole("link", { name: "Status", exact: true }).click();
-  await expect(page.locator(".sensor-row").first()).toContainText("Problem reported");
-  await expect(page.locator(".device-error:visible")).toHaveText("pH probe disconnected");
+  await expect(page.locator('[data-callout="ph"]')).toContainText("Problem reported");
+  await expect(page.locator(".model-device-error:visible")).toHaveText("pH probe disconnected");
   const idle = { ...report, pendingScans: 0, syncState: "idle", ready: true, sensors: { ...report.sensors, ph: "ok" }, lastError: null };
   expect((await page.request.post("/api/device-status", { data: idle, headers })).status()).toBe(200);
   await page.goto("/");

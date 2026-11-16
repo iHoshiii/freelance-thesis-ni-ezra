@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const routes = [["/", "Overview", ".summary-grid"], ["/scans", "Scans", ".scan-history"], ["/recommendations", "Recommendations", ".guidance-grid"], ["/statistics", "Statistics", ".statistics-panel"], ["/status", "Status", ".monitor-panel"]];
+const routes = [["/", "Overview", ".summary-grid"], ["/scans", "Scans", ".scan-history"], ["/recommendations", "Recommendations", ".guidance-grid"], ["/statistics", "Statistics", ".statistics-panel"], ["/status", "Status", ".status-device"]];
 
 test("shows fitted skeletons on slow first visits and keeps navigation interactive", async ({ page }) => {
   test.setTimeout(120000);

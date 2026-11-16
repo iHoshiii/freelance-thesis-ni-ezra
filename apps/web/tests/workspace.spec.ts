@@ -105,7 +105,7 @@ test("fits five tabs in expanded and collapsed sidebars on all screen sizes", as
         if (path === "/scans") await expect(page.locator(".scan-table tbody tr").first()).toBeVisible();
         if (path === "/recommendations") await expect(page.locator(".guidance-grid:visible")).toBeVisible();
         if (path === "/statistics") await expect(page.locator(".distribution")).toBeVisible();
-        if (path === "/status") await expect(page.locator(".monitor-panel:visible")).toBeVisible();
+        if (path === "/status") await expect(page.locator(".status-device:visible")).toBeVisible();
         await expect(page.locator(".sidebar:visible nav a")).toHaveCount(5);
         const toggle = page.getByRole("button", { name: "Toggle sidebar", exact: true });
         if (viewport.width <= 700) {
