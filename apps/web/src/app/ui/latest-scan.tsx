@@ -7,8 +7,8 @@ import { ScanValues } from "./scan-values";
 
 export function LatestScan({ scan }: { scan: Scan | null }) {
   return <section className="panel latest-scan" aria-labelledby="latest-title">
-    <div className="panel-heading"><div className="section-title"><span className="section-symbol"><Icon name="sample" /></span><div><h2 id="latest-title">Last scan</h2><p>{scan ? scan.sampleId : "Waiting for your first scan"}</p></div></div>{scan ? <Link className="text-link" href={scanHref(scan)}>View details <Icon name="arrow" /></Link> : <span className="subtle-tag">No scans yet</span>}</div>
+    <div className="panel-heading"><div className="section-title"><h2 id="latest-title">Last scan</h2>{scan && <span className="muted scan-name">{scan.sampleId}</span>}</div>{scan && <Link className="text-link" href={scanHref(scan)}>View scan <Icon name="arrow" /></Link>}</div>
     <ScanValues scan={scan} />
-    <div className="scan-meta"><span><Icon name="location" />{scan?.location ?? "Location unassigned"}</span><span>Scanned <strong>{scan ? formatDate(scan.acquiredAt) : "Not yet"}</strong></span><span>Uploaded <strong>{scan ? formatDate(scan.receivedAt) : "Not yet"}</strong></span></div>
+    {scan && <div className="scan-meta"><span title={scan.location ?? "Unassigned"}><Icon name="location" />{scan.location ?? "Unassigned"}</span><span title="Scan time"><time dateTime={scan.acquiredAt ?? undefined}>{scan.acquiredAt ? formatDate(scan.acquiredAt, true) : "--"}</time></span></div>}
   </section>;
 }

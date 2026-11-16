@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { withDatabase, reportFailure } from "./database.mjs";
 
-const migrations = ["202611040001_initial.sql", "202611090001_shared_workspace.sql"];
+const migrations = ["202611040001_initial.sql", "202611090001_shared_workspace.sql", "202611150001_device_telemetry.sql"];
 try {
   await withDatabase(async (db) => {
     await db.query("BEGIN");

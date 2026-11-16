@@ -13,6 +13,8 @@ npm run dev
 
 Open http://localhost:3000. Without database configuration, the dashboard stays empty and links to `/setup`. It never generates sample measurements.
 
+On Windows, `npm run dev` keeps Next.js and its workers tied to the launching terminal. Press Ctrl+C or close/delete that PowerShell terminal to stop the whole dev server and release its port. Extra Next.js options still work, for example `npm run dev -- --port 3002`.
+
 ## Database and device setup
 
 Use `.env.example` as a reference and configure your own `.env` or `.env.local`:
@@ -48,6 +50,8 @@ Use SQL migrations for schema changes. `prisma db push` does not manage Supabase
 
 ## Dashboard behavior
 
+The sidebar now has Overview, Scans, Recommendations, Statistics and Status. Device registration/setup remains accessible from Status. See [the next implementation plan](docs/WEB_NEXT_STEPS.md) and [ESP32 reporting contract](docs/DEVICE_TELEMETRY.md).
+
 - Last scan is the latest known measurement time, with upload time used to order records when all measurement times are unknown. It is independent of history filters.
 - History supports Today, Last 7 days, Last 30 days, All, custom ranges, search, location filters, and pagination.
 - Date filters explicitly select scan time or upload time. Unknown scan times appear in All; select upload time to find them within a date range.
@@ -61,6 +65,7 @@ Use SQL migrations for schema changes. `prisma db push` does not manage Supabase
 
 ```powershell
 npm test
+npm run test:dev
 npm run lint
 npm run typecheck
 npm run build

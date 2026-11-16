@@ -9,7 +9,7 @@ await db.exec("SET TIME ZONE 'UTC'");
 await db.exec(`CREATE SCHEMA auth; CREATE TABLE auth.users (id uuid primary key);
   CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role BYPASSRLS;
   CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql AS 'SELECT NULL::uuid';`);
-for (const name of ["202611040001_initial.sql", "202611090001_shared_workspace.sql"]) {
+for (const name of ["202611040001_initial.sql", "202611090001_shared_workspace.sql", "202611150001_device_telemetry.sql"]) {
   await db.exec(await readFile(new URL(`../../../supabase/migrations/${name}`, import.meta.url), "utf8"));
 }
 const tokenHash = createHash("sha256").update("test-device-token-".repeat(4)).digest("hex");

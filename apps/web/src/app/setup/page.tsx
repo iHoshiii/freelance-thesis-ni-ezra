@@ -19,5 +19,5 @@ async function SetupContent() {
 }
 
 export default function Setup() {
-  return <Suspense fallback={<WorkspaceLoading />}><SetupContent /></Suspense>;
+  return <Suspense fallback={<WorkspaceLoading title="Setup" />}><SetupContent /></Suspense>;
 }

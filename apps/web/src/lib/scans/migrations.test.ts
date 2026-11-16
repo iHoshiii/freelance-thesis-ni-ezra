@@ -15,7 +15,7 @@ beforeAll(async () => {
     CREATE TABLE auth.users (id uuid primary key);
     CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role;
     CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql AS 'SELECT NULL::uuid';`);
-  for (const name of ["202611040001_initial.sql", "202611090001_shared_workspace.sql"]) {
+  for (const name of ["202611040001_initial.sql", "202611090001_shared_workspace.sql", "202611150001_device_telemetry.sql"]) {
     await db.exec(await readFile(new URL(`../../../../../supabase/migrations/${name}`, import.meta.url), "utf8"));
   }
 }, 30000);
@@ -58,11 +58,19 @@ describe("shared workspace SQL migrations", () => {
     await db.exec("SET ROLE anon");
     try {
       await expect(db.query("SELECT token_hash FROM public.devices")).rejects.toThrow();
+      await expect(db.query("SELECT payload FROM public.device_telemetry")).rejects.toThrow();
       await expect(db.query("SELECT public.ingest_reading('soil-001', '{}'::jsonb)")).rejects.toThrow();
     } finally { await db.exec("RESET ROLE"); }
   });
   it("can safely reapply the shared workspace migration", async () => {
     await db.exec(await readFile(new URL("../../../../../supabase/migrations/202611090001_shared_workspace.sql", import.meta.url), "utf8"));
     expect((await ingest(payload)).acknowledgedRecordId).toBe(payload.recordId);
+  });
+  it("retains the latest telemetry separately from immutable scan records", async () => {
+    await ingest(payload);
+    await db.query("INSERT INTO public.device_telemetry (device_id, payload) VALUES ($1, $2::jsonb)", ["soil-001", JSON.stringify({ pendingScans: 3 })]);
+    await db.query("UPDATE public.device_telemetry SET payload = $1::jsonb WHERE device_id = $2", [JSON.stringify({ pendingScans: 0 }), "soil-001"]);
+    expect((await db.query<{ count: number }>("SELECT count(*)::int AS count FROM public.readings")).rows[0].count).toBe(1);
+    expect((await db.query<{ payload: unknown }>("SELECT payload FROM public.device_telemetry")).rows[0].payload).toEqual({ pendingScans: 0 });
   });
 });
