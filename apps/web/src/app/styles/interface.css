@@ -1,0 +1,110 @@
+.topbar { background: var(--surface); }
+.topbar h1 { font-size: 18px; font-weight: 500; letter-spacing: -.35px; }
+.dashboard-content { padding: 28px 32px; gap: 24px; }
+.panel { border-radius: 6px; }
+.page-actions { gap: 20px; }
+.text-link { color: var(--foreground); font-size: 12px; }
+.button-secondary { color: var(--foreground); border-color: var(--line); }
+.icon-button { color: var(--muted); }
+.summary-grid { gap: 0; padding: 4px 0 24px; border-bottom: 1px solid var(--line); }
+.summary-card { padding: 0 28px; gap: 12px; border-right: 1px solid var(--line); }
+.summary-card:first-child { padding-left: 0; }
+.summary-card:last-child { border-right: 0; }
+.summary-card > span { font-size: 12px; color: var(--muted); }
+.summary-card > strong { font-size: 38px; font-weight: 500; color: var(--foreground); letter-spacing: -1px; }
+.overview-workspace { gap: 0; }
+.monitor-panel { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.monitor-panel .panel-heading { padding: 0 0 24px; }
+.monitor-panel h2, .service-panel h2 { font-size: 14px; font-weight: 500; }
+.device-name, .scan-name { font-size: 12px; font-weight: 400; }
+.monitor-metrics { padding: 0 0 24px; }
+.monitor-metrics > div { padding-inline: 28px; }
+.monitor-metrics span { font-size: 12px; }
+.monitor-metrics strong { color: var(--foreground); font-size: 28px; font-weight: 500; }
+.monitor-metrics .battery-low { color: #ad5933; }
+.monitor-state { padding: 0 0 18px; border: 0; font-size: 12px; gap: 16px; }
+.health-pill { background: transparent; border-radius: 0; padding: 0; font-size: 12px; font-weight: 400; }
+.health-neutral { color: var(--muted); }
+.health-bad { color: #ac403a; }
+.monitor-footer { background: transparent; padding: 12px 0; color: var(--muted); }
+.latest-upload { padding: 20px 0; }
+.latest-upload > div { gap: 10px 20px; }
+.latest-upload strong { font-size: 13px; font-weight: 500; }
+.latest-upload small { font-size: 12px; }
+.latest-scan { border-top: 1px solid var(--line); }
+.latest-scan .panel-heading { padding-block: 16px; }
+.latest-scan h2 { font-size: 13px; font-weight: 500; }
+.reading-groups { padding-block: 8px 22px; }
+.reading-label { color: var(--muted); }
+.reading-label .icon { display: none; }
+.reading-value { color: var(--foreground); }
+.reading-value > span { font-size: 30px; font-weight: 400; }
+.nutrient-grid strong { color: var(--foreground); font-weight: 400; }
+.scan-meta { background: transparent; color: var(--muted); }
+.scan-meta strong { color: var(--foreground); }
+.service-panel { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; }
+.service-panel .panel-heading { padding: 0 0 18px; }
+.service-checks { padding: 0 0 24px; }
+.service-checks > div { font-size: 12px; }
+.sensor-grid { padding: 0; gap: 0 32px; }
+.sensor-row { padding-block: 16px; }
+.guidance-grid { display: flex; flex-direction: column; gap: 0; flex: 0 1 auto; border-top: 1px solid var(--line); }
+.guidance-card { display: block; flex: none; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.guidance-title { justify-content: space-between; color: var(--foreground); }
+.guidance-title h2 { font-size: 13px; font-weight: 500; }
+.guidance-title > strong { flex-basis: auto; font-size: 21px; font-weight: 400; }
+.guidance-state { display: inline-block; margin-top: 6px; font-size: 11px; font-weight: 500; color: #4c7057; }
+.guidance-card p { margin-top: 6px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+.statistics-panel { border: 0; border-top: 1px solid var(--line); border-radius: 0; background: transparent; }
+.statistic-tabs { padding: 12px 0; gap: 4px; }
+.statistic-tabs button { padding: 7px 12px; font-size: 12px; }
+.statistic-content { padding: 24px 0; gap: 24px; }
+.statistic-content h2 { font-size: 13px; font-weight: 500; }
+.statistic-summary strong { color: var(--foreground); font-weight: 400; }
+.distribution-track { background: #edf0ed; height: 12px; }
+.distribution-track i { background: #64816c; }
+.scan-history h2 { font-size: 13px; font-weight: 500; }
+.scan-table thead th { background: #fafbfa; color: var(--muted); }
+.scan-table tbody td, .scan-table tbody th a { color: var(--foreground); }
+.scan-history .empty-state h3 { color: var(--muted); font-size: 13px; }
+.skeleton-summary { gap: 0; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+.skeleton-summary .skeleton-card { border: 0; border-radius: 0; background: transparent; }
+.skeleton-guidance { display: flex; flex-direction: column; gap: 0; }
+.skeleton-guidance .skeleton-card { border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+@media (max-width: 1050px) {
+  .dashboard-content { padding: 22px 24px; gap: 20px; }
+  .device-name { font-size: 11px; }
+}
+@media (max-width: 700px) {
+  .topbar h1 { font-size: 16px; }
+  .dashboard-content { padding: 18px 14px; gap: 18px; }
+  .summary-grid { padding-bottom: 18px; }
+  .summary-card { padding-inline: 12px; gap: 10px; }
+  .summary-card > span { font-size: 10px; }
+  .summary-card > strong { font-size: 30px; }
+  .monitor-panel .panel-heading { padding-bottom: 18px; }
+  .monitor-panel .section-title { flex-wrap: wrap; gap: 4px 8px; }
+  .monitor-metrics { padding-bottom: 18px; }
+  .monitor-metrics > div { padding-inline: 12px; }
+  .monitor-metrics span { font-size: 10px; }
+  .monitor-metrics strong { font-size: 24px; }
+  .health-pill, .monitor-state { font-size: 10px; }
+  .latest-upload { padding-block: 18px; }
+  .latest-upload small { font-size: 10px; }
+  .latest-scan .panel-heading { padding-block: 12px; }
+  .reading-groups { padding-block: 0; }
+  .reading-value > span { font-size: 25px; }
+  .service-checks { padding-bottom: 18px; }
+  .sensor-grid { gap: 0 16px; }
+  .sensor-row { padding-block: 12px; }
+  .guidance-card { padding-block: 16px; }
+  .guidance-title > strong { font-size: 18px; }
+  .guidance-card p { font-size: 11px; }
+  .statistic-tabs { gap: 0; }
+  .statistic-tabs button { padding: 7px 5px; font-size: 10px; }
+  .statistic-content { padding-block: 16px; gap: 18px; }
+}
+@media (max-height: 700px) {
+  .dashboard-content { gap: 14px; padding-block: 16px; }
+  .guidance-card { padding-block: 14px; }
+}
