@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:dev": "node --test tests/dev-lifecycle.windows.mjs",
     "typecheck": "tsc --noEmit",
     "postinstall": "prisma generate",
     "prebuild": "prisma generate",

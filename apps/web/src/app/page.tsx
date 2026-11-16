@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-import type { SearchParams } from "@/lib/scans/types";
-import { WorkspaceDashboard } from "./ui/workspace-dashboard";
+import { OverviewDashboard } from "./ui/overview-dashboard";
 import { WorkspaceLoading } from "./ui/workspace-shell";
 
-export default function Home({ searchParams }: { searchParams: Promise<SearchParams> }) {
-  return <Suspense fallback={<WorkspaceLoading />}><WorkspaceDashboard searchParams={searchParams} /></Suspense>;
+export default function Home() {
+  return <Suspense fallback={<WorkspaceLoading />}><OverviewDashboard /></Suspense>;
 }
