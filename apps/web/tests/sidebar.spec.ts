@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("animates on hover without shifting the page or covering navigation", async ({ page }) => {
+test("animates on hover and moves content clear of the sidebar", async ({ page }) => {
   await page.goto("/status");
   const sidebar = page.getByRole("complementary", { name: "Workspace sidebar" });
   const toggle = page.getByRole("button", { name: "Toggle sidebar" });
@@ -10,12 +10,15 @@ test("animates on hover without shifting the page or covering navigation", async
   await sidebar.hover({ position: { x: 25, y: 100 } });
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
   await expect.poll(async () => (await sidebar.boundingBox())?.width).toBe(216);
-  expect(await page.locator("main").boundingBox()).toEqual(content);
+  const expandedContent = await page.locator("main").boundingBox();
+  expect(expandedContent!.x).toBe(216);
+  expect(expandedContent!.x + expandedContent!.width).toBe(content!.x + content!.width);
   await expect(page.getByRole("button", { name: /Expand sidebar|Collapse sidebar/ })).toHaveCount(0);
   await page.getByRole("navigation").getByRole("link", { name: "Status", exact: true }).click();
   await page.mouse.move(500, 100);
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
   await expect.poll(async () => (await sidebar.boundingBox())?.width).toBe(64);
+  expect((await page.locator("main").boundingBox())!.x).toBe(64);
   await page.screenshot({ path: "test-results/sidebar-collapsed.png" });
   await sidebar.hover({ position: { x: 25, y: 100 } });
   await expect.poll(async () => (await sidebar.boundingBox())?.width).toBe(216);
@@ -49,6 +52,11 @@ test("lets touch users tap the logo and closes after choosing a tab or tapping c
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     await toggle.tap();
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    const menu = await page.getByRole("complementary", { name: "Workspace sidebar" }).boundingBox();
+    const content = await page.locator("main:visible").boundingBox();
+    expect(content!.y).toBeGreaterThanOrEqual(menu!.y + menu!.height);
+    expect(content!.width).toBe(360);
+    await page.screenshot({ path: "test-results/sidebar-touch-expanded.png" });
     await toggle.tap();
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     await toggle.tap();
