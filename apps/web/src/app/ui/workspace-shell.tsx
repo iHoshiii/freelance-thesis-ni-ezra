@@ -14,7 +14,7 @@ export function WorkspaceShell({ children, current = "/", title = "Overview", la
   return <div className={`shell${collapsed ? " sidebar-is-collapsed" : ""}`}>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <WorkspaceSidebar current={current} />
-    <main id="main-content" tabIndex={-1} onPointerDown={close}>
+    <main id="main-content" tabIndex={-1} onClick={close}>
       <header className="topbar"><h1>{title}</h1><div className="upload-status">{lastUpload && <span title="Last upload">{formatDate(lastUpload, true)}</span>}<QueryActivity /><RefreshButton current={current} /></div></header>
       <div className="dashboard-content">{children}</div>
     </main>
