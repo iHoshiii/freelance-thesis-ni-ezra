@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { DashboardNav } from "./dashboard-nav";
 import { Icon } from "./dashboard-icon";
+import { SidebarActions } from "./sidebar-actions";
 import { useSidebar } from "./sidebar-state";
 
 export function WorkspaceSidebar({ current }: { current: string }) {
@@ -22,5 +23,6 @@ export function WorkspaceSidebar({ current }: { current: string }) {
       </button>
     </div>
     <div id="sidebar-navigation" onClick={(event) => { if (pointer.current !== "mouse" && (event.target as Element).closest("a")) close(); }}><DashboardNav current={current} /></div>
+    <SidebarActions />
   </aside>;
 }
