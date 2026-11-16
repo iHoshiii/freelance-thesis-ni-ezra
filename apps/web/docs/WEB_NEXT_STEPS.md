@@ -12,10 +12,10 @@ Periods called week/month mean rolling 7/30 calendar days including today in UTC
 
 ## Next implementation order
 
-1. **ESP32 data path.** Implement sensor acquisition, persistent flash queue, Wi-Fi reconnection, acknowledged upload retries and `/api/device-status` heartbeats. Report actual battery measurements and sensor self-test results. Follow [the reporting contract](DEVICE_TELEMETRY.md). Test connection loss, power loss, duplicate uploads and reconnecting with queued scans on hardware.
+1. **ESP32 data path.** The [firmware starter](../../../firmware/README.md) now includes optional sensor adapters, persistent flash queuing, Wi-Fi reconnection, acknowledged upload retries and `/api/device-status` heartbeats. Confirm the arriving board and wiring, configure/calibrate the sensors, and test connection loss, power loss, duplicate uploads and reconnecting with queued scans on hardware. Battery and NPK drivers still depend on actual component details. Follow [the reporting contract](DEVICE_TELEMETRY.md).
 2. **Calibration and crop profile.** Record crop, growth stage, soil type, sampling depth and location. Set moisture field-capacity/reference points and crop-specific temperature/pH targets. Store calibration date, unit, method and reference test.
 3. **Validated recommendation model.** Compare NPK and other inputs against laboratory references, validate the thesis model, then add explainable crop-specific recommendations with confidence/validation status.
 4. **Sync event history and alerts.** Keep upload failures, last successful sync, low battery and sensor errors as events. Add targeted alerts and a last-seen timeline; avoid treating missing data as zero or as proof of sensor failure.
 5. **Research reports.** Add saved location comparisons, downloadable summary reports and missing-data/calibration coverage over time. Add access control if deployment extends beyond the shared research team.
 
-No hardware telemetry is simulated. Firmware is currently a scaffold. The web endpoint and table are ready to receive real device reports.
+No hardware telemetry is simulated. Firmware builds and reports only configured inputs, with unavailable measurements kept null. The web endpoint and table are ready to receive real device reports once the device is configured. Hardware behavior remains to be verified.
