@@ -94,7 +94,7 @@ test("keeps mobile navigation and filters usable without page overflow", async (
 test("fits five tabs in expanded and collapsed sidebars on all screen sizes", async ({ page }) => {
   test.setTimeout(180000);
   const routes = [["/", "Overview"], ["/scans", "Scans"], ["/recommendations", "Recommendations"], ["/statistics", "Statistics"], ["/status", "Status"]];
-  for (const viewport of [{ width: 1366, height: 688 }, { width: 1024, height: 768 }, { width: 390, height: 844 }, { width: 360, height: 640 }]) {
+  for (const viewport of [{ width: 1366, height: 688 }, { width: 1024, height: 768 }, { width: 768, height: 640 }, { width: 390, height: 844 }, { width: 360, height: 640 }]) {
     await page.setViewportSize(viewport);
     await page.goto("/");
     for (const collapsed of [false, true]) {
@@ -107,15 +107,21 @@ test("fits five tabs in expanded and collapsed sidebars on all screen sizes", as
         if (path === "/statistics") await expect(page.locator(".distribution")).toBeVisible();
         if (path === "/status") await expect(page.locator(".monitor-panel:visible")).toBeVisible();
         await expect(page.locator(".sidebar:visible nav a")).toHaveCount(5);
-        await page.mouse.move(collapsed ? viewport.width - 5 : 25, 100);
-        await expect(page.getByRole("button", { name: "Toggle sidebar", exact: true })).toHaveAttribute("aria-expanded", String(!collapsed));
+        const toggle = page.getByRole("button", { name: "Toggle sidebar", exact: true });
+        if (viewport.width <= 700) {
+          if (await toggle.getAttribute("aria-expanded") !== String(!collapsed)) await toggle.click();
+        } else await page.mouse.move(collapsed ? viewport.width - 5 : 25, 100);
+        await expect(toggle).toHaveAttribute("aria-expanded", String(!collapsed));
         await expect(async () => {
           const problems = await page.evaluate(() => {
-            const selectors = [".summary-card", ".monitor-panel", ".monitor-footer", ".latest-upload", ".latest-scan", ".scan-history", ".table-footer", ".guidance-card", ".recommendation-note", ".workspace-footnote", ".service-panel", ".statistics-panel", ".statistic-note", ".sidebar nav"];
-            return selectors.flatMap(selector => [...document.querySelectorAll(selector)].filter(element => {
+            const visibleBox = (selector: string) => [...document.querySelectorAll(selector)].map(element => element.getBoundingClientRect()).find(box => box.width && box.height)!;
+            const menu = visibleBox(".sidebar"), content = visibleBox("main");
+            const overlap = menu.left < content.right && menu.right > content.left + 1 && menu.top < content.bottom && menu.bottom > content.top + 1;
+            const selectors = [".summary-card", ".monitor-panel", ".monitor-footer", ".latest-upload", ".latest-scan", ".scan-history", ".table-footer", ".guidance-card", ".recommendation-note", ".workspace-footnote", ".service-panel", ".statistics-panel", ".statistic-note", ".sidebar nav", ".sidebar nav a"];
+            return [...(overlap ? ["sidebar covers content"] : []), ...selectors.flatMap(selector => [...document.querySelectorAll(selector)].filter(element => {
               const box = element.getBoundingClientRect();
               return box.width && box.height && (box.left < -1 || box.top < -1 || box.right > innerWidth + 1 || box.bottom > innerHeight + 1);
-            }).map(() => selector));
+            }).map(() => selector))];
           });
           expect(problems).toEqual([]);
         }).toPass({ timeout: 5000 });

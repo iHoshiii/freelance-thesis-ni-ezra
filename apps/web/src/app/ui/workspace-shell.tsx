@@ -15,7 +15,7 @@ export function WorkspaceShell({ children, current = "/", title = "Overview", la
     <a className="skip-link" href="#main-content">Skip to content</a>
     <WorkspaceSidebar current={current} />
     <main id="main-content" tabIndex={-1} onPointerDown={close}>
-      <header className="topbar"><h1>{title}</h1><div className="upload-status">{lastUpload !== undefined && <span>Last upload <strong>{lastUpload ? formatDate(lastUpload, true) : "Not yet"}</strong></span>}<QueryActivity /><RefreshButton current={current} /></div></header>
+      <header className="topbar"><h1>{title}</h1><div className="upload-status">{lastUpload && <span title="Last upload">{formatDate(lastUpload, true)}</span>}<QueryActivity /><RefreshButton current={current} /></div></header>
       <div className="dashboard-content">{children}</div>
     </main>
   </div>;

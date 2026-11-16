@@ -1,5 +1,6 @@
-.shell { --sidebar-rail: 64px; position: relative; display: flex; flex-direction: row; padding-left: var(--sidebar-rail); }
-.sidebar { position: absolute; inset: 0 auto 0 0; z-index: 10; width: 216px; height: 100%; padding: 28px 8px; overflow: hidden; box-shadow: 8px 0 24px #173f3526; transition: width .24s cubic-bezier(.2, .8, .2, 1), box-shadow .24s ease; }
+.shell { --sidebar-rail: 64px; position: relative; display: flex; flex-direction: row; padding-left: 216px; transition: padding-left .24s cubic-bezier(.2, .8, .2, 1); }
+.shell.sidebar-is-collapsed { padding-left: var(--sidebar-rail); }
+.sidebar { position: absolute; inset: 0 auto 0 0; z-index: 10; width: 216px; height: 100%; padding: 28px 8px; overflow: hidden; transition: width .24s cubic-bezier(.2, .8, .2, 1); }
 .sidebar.sidebar-collapsed { width: var(--sidebar-rail); box-shadow: none; }
 .sidebar-header { display: flex; align-items: center; min-height: 40px; flex-shrink: 0; }
 .sidebar .brand { display: flex; align-items: center; gap: 8px; width: 198px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: white; font-size: 20px; text-align: left; }
@@ -19,6 +20,13 @@
   .sidebar .brand { padding-inline: 7px; }
   .sidebar nav { gap: 8px; margin-top: 24px; }
   .sidebar nav a { padding-inline: 13px; }
+  .shell { padding-left: 0; padding-top: 96px; transition: none; }
+  .shell.sidebar-is-collapsed { padding-top: 0; }
+  .sidebar { width: 100%; height: 96px; padding-block: 8px; transition: none; }
+  .sidebar.sidebar-collapsed { height: 100%; }
+  .sidebar:not(.sidebar-collapsed) nav { display: flex; justify-content: space-between; gap: 2px; margin-top: 4px; }
+  .sidebar:not(.sidebar-collapsed) nav a { min-height: 36px; padding: 8px 2px; gap: 4px; font-size: 10px; }
+  .sidebar:not(.sidebar-collapsed) nav a .icon { width: 12px; height: 12px; }
   .upload-status > span:not(.query-activity) { display: none; }
 }
 @media (max-height: 700px) and (max-width: 700px) {
@@ -26,5 +34,5 @@
   .sidebar-header { min-height: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sidebar, .sidebar .brand-name, .sidebar .nav-text { transition: none; }
+  .shell, .sidebar, .sidebar .brand-name, .sidebar .nav-text { transition: none; }
 }

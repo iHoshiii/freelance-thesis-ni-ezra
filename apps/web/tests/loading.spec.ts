@@ -16,9 +16,11 @@ test("shows fitted skeletons on slow first visits and keeps navigation interacti
         const skeleton = page.getByRole("status", { name: `Loading ${title}`, exact: true });
         await expect(skeleton).toBeVisible();
         await expect(page.locator(".query-activity:visible")).toHaveText("Loading");
-        await page.mouse.move(25, 100);
+        if (viewport.width <= 700) await page.getByRole("button", { name: "Toggle sidebar" }).click();
+        else await page.mouse.move(25, 100);
         await expect(page.getByRole("button", { name: "Toggle sidebar" })).toHaveAttribute("aria-expanded", "true");
-        await page.mouse.move(viewport.width - 5, 100);
+        if (viewport.width <= 700) await page.getByRole("button", { name: "Toggle sidebar" }).click();
+        else await page.mouse.move(viewport.width - 5, 100);
         await expect(page.getByRole("button", { name: "Toggle sidebar" })).toHaveAttribute("aria-expanded", "false");
         expect(await skeleton.locator(".skeleton-bone").first().evaluate((element) => getComputedStyle(element).animationName)).toBe("none");
         const overflow = await page.evaluate(() => [...document.querySelectorAll(".page-skeleton, .skeleton-card")].some((element) => {
