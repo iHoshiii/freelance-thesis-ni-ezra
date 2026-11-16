@@ -30,5 +30,5 @@ async function ScanContent({ params }: { params: Params }) {
 }
 
 export default function ScanDetails({ params }: { params: Params }) {
-  return <Suspense fallback={<WorkspaceLoading />}><ScanContent params={params} /></Suspense>;
+  return <Suspense fallback={<WorkspaceLoading title="Scans" />}><ScanContent params={params} /></Suspense>;
 }

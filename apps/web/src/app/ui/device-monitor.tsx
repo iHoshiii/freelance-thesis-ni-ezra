@@ -1,18 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { healthOptions } from "@/lib/workspace-queries";
 import Link from "next/link";
 import { formatDate } from "@/lib/scans/dates";
 import type { DeviceSummary } from "@/lib/scans/types";
 import { reportIsFresh, syncLabel, type DeviceReport } from "@/lib/telemetry";
 import { Icon } from "./dashboard-icon";
+import { useDeviceClock } from "./use-device-clock";
+import { useOnlineStatus } from "./use-online-status";
 
 export function DeviceMonitor({ devices, reports, telemetryAvailable, checkedAt, detailed = false }: {
   devices: DeviceSummary[]; reports: DeviceReport[]; telemetryAvailable: boolean; checkedAt: number; detailed?: boolean;
 }) {
   const [selected, setSelected] = useState(devices[0]?.id ?? "");
-  const [now, setNow] = useState(checkedAt);
-  useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 5000); return () => clearInterval(timer); }, []);
+  const now = useDeviceClock(checkedAt);
   const device = devices.find((item) => item.id === selected) ?? devices[0];
   const report = reports.find((item) => item.deviceId === device?.id);
   const fresh = reportIsFresh(report, now);
@@ -35,29 +38,12 @@ export function DeviceMonitor({ devices, reports, telemetryAvailable, checkedAt,
   </section>;
 }
 
-export function ServiceHealth({ initialDatabase, initialSchema }: { initialDatabase: string; initialSchema: boolean }) {
-  const [health, setHealth] = useState({ server: "connected", database: initialDatabase, schema: initialSchema });
-  useEffect(() => {
-    let disposed = false;
-    let controller: AbortController | undefined;
-    async function check() {
-      controller?.abort();
-      controller = new AbortController();
-      const timeout = setTimeout(() => controller?.abort(), 7000);
-      try {
-        const response = await fetch("/api/health", { cache: "no-store", signal: controller.signal });
-        if (!response.ok) throw new Error("Health check unavailable");
-        const result = await response.json();
-        if (!disposed) setHealth(result);
-      } catch { if (!disposed) setHealth({ server: "unavailable", database: "unknown", schema: false }); }
-      finally { clearTimeout(timeout); }
-    }
-    void check();
-    const timer = setInterval(check, 15000);
-    return () => { disposed = true; clearInterval(timer); controller?.abort(); };
-  }, []);
+export function ServiceHealth() {
+  const query = useQuery(healthOptions());
+  const online = useOnlineStatus();
+  const health = query.isError || query.isPaused || !online ? { server: "unavailable", database: "unknown", schema: false } : query.data ?? { server: "checking", database: "unknown", schema: false };
   const checks = [
-    { name: "Web server", good: health.server === "connected", text: health.server === "connected" ? "Connected" : "Cannot reach server" },
+    { name: "Web server", good: health.server === "connected", text: health.server === "connected" ? "Connected" : health.server === "checking" ? "Checking" : "Cannot reach server" },
     { name: "Database", good: health.database === "connected", text: ({ connected: "Connected", not_configured: "Not configured", unavailable: "Connection failed", unknown: "Cannot check" } as Record<string, string>)[health.database] ?? "Checking" },
     { name: "Scan storage", good: health.server === "connected" && health.database === "connected" && health.schema, text: health.database === "connected" ? health.schema ? "Tables ready" : "Setup required" : "Cannot check" },
   ];

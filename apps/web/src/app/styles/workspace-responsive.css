@@ -1,5 +1,5 @@
 @media (max-width: 700px) {
-  .sidebar-is-collapsed .upload-status > span { display: none; }
+  .sidebar-is-collapsed .upload-status > span:not(.query-activity) { display: none; }
   .sidebar nav { gap: 3px; }
   .sidebar nav a { font-size: 10px; gap: 4px; }
   .sidebar nav a .icon { width: 12px; height: 12px; }

@@ -98,14 +98,17 @@ test("fits five tabs in expanded and collapsed sidebars on all screen sizes", as
     await page.setViewportSize(viewport);
     await page.goto("/");
     for (const collapsed of [false, true]) {
-      if (collapsed) await page.getByRole("button", { name: "Collapse sidebar", exact: true }).click();
       for (const [path, label] of routes) {
         await page.getByRole("navigation", { name: "Main navigation" }).getByRole("link", { name: label, exact: true }).click();
         await expect(page.locator(".topbar h1:visible")).toHaveText(label);
+        if (path === "/") await expect(page.locator(".summary-grid:visible")).toBeVisible();
         if (path === "/scans") await expect(page.locator(".scan-table tbody tr").first()).toBeVisible();
+        if (path === "/recommendations") await expect(page.locator(".guidance-grid:visible")).toBeVisible();
         if (path === "/statistics") await expect(page.locator(".distribution")).toBeVisible();
+        if (path === "/status") await expect(page.locator(".monitor-panel:visible")).toBeVisible();
         await expect(page.locator(".sidebar:visible nav a")).toHaveCount(5);
-        await expect(page.getByRole("button", { name: collapsed ? "Expand sidebar" : "Collapse sidebar", exact: true })).toHaveAttribute("aria-expanded", String(!collapsed));
+        await page.mouse.move(collapsed ? viewport.width - 5 : 25, 100);
+        await expect(page.getByRole("button", { name: "Toggle sidebar", exact: true })).toHaveAttribute("aria-expanded", String(!collapsed));
         await expect(async () => {
           const problems = await page.evaluate(() => {
             const selectors = [".summary-card", ".monitor-panel", ".monitor-footer", ".latest-upload", ".latest-scan", ".scan-history", ".table-footer", ".guidance-card", ".recommendation-note", ".workspace-footnote", ".service-panel", ".statistics-panel", ".statistic-note", ".sidebar nav"];

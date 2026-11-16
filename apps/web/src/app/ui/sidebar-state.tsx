@@ -2,11 +2,22 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-const SidebarContext = createContext<{ collapsed: boolean; toggle: () => void } | null>(null);
+type SidebarState = {
+  collapsed: boolean;
+  setHovered: (value: boolean) => void;
+  setFocused: (value: boolean) => void;
+  toggleTouch: () => void;
+  close: () => void;
+};
+
+const SidebarContext = createContext<SidebarState | null>(null);
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
-  return <SidebarContext.Provider value={{ collapsed, toggle: () => setCollapsed((current) => !current) }}>{children}</SidebarContext.Provider>;
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [touchOpen, setTouchOpen] = useState(false);
+  const close = () => { setHovered(false); setFocused(false); setTouchOpen(false); };
+  return <SidebarContext.Provider value={{ collapsed: !hovered && !focused && !touchOpen, setHovered, setFocused, toggleTouch: () => setTouchOpen((value) => !value), close }}>{children}</SidebarContext.Provider>;
 }
 
 export function useSidebar() {

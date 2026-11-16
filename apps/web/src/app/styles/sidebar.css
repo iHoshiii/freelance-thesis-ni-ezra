@@ -1,0 +1,30 @@
+.shell { --sidebar-rail: 64px; position: relative; display: flex; flex-direction: row; padding-left: var(--sidebar-rail); }
+.sidebar { position: absolute; inset: 0 auto 0 0; z-index: 10; width: 216px; height: 100%; padding: 28px 8px; overflow: hidden; box-shadow: 8px 0 24px #173f3526; transition: width .24s cubic-bezier(.2, .8, .2, 1), box-shadow .24s ease; }
+.sidebar.sidebar-collapsed { width: var(--sidebar-rail); box-shadow: none; }
+.sidebar-header { display: flex; align-items: center; min-height: 40px; flex-shrink: 0; }
+.sidebar .brand { display: flex; align-items: center; gap: 8px; width: 198px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: white; font-size: 20px; text-align: left; }
+.sidebar .brand:focus-visible { outline-color: #c3e2b5; outline-offset: -2px; }
+.sidebar .brand-mark { width: 28px; height: 37px; flex-shrink: 0; }
+.sidebar .brand-mark .icon { width: 25px; height: 25px; }
+.sidebar nav { display: grid; gap: 6px; margin-top: 38px; }
+.sidebar nav a { display: flex; justify-content: flex-start; gap: 14px; min-height: 46px; padding: 12px 15px; border: 0; border-radius: 7px; font-size: 13px; white-space: nowrap; }
+.sidebar nav a .icon { width: 18px; height: 18px; }
+.sidebar nav a[aria-current] { color: white; background: #ffffff17; box-shadow: inset 3px 0 #b4d6a4; }
+.sidebar nav a:focus-visible { outline-offset: -2px; }
+.sidebar .brand-name, .sidebar .nav-text { opacity: 1; transform: translateX(0); transition: opacity .16s ease, transform .24s ease; }
+.sidebar-collapsed .brand-name, .sidebar-collapsed .nav-text { opacity: 0; transform: translateX(-6px); pointer-events: none; }
+@media (max-width: 700px) {
+  .shell { --sidebar-rail: 56px; }
+  .sidebar { padding: 12px 6px; }
+  .sidebar .brand { padding-inline: 7px; }
+  .sidebar nav { gap: 8px; margin-top: 24px; }
+  .sidebar nav a { padding-inline: 13px; }
+  .upload-status > span:not(.query-activity) { display: none; }
+}
+@media (max-height: 700px) and (max-width: 700px) {
+  .sidebar { padding-top: 8px; }
+  .sidebar-header { min-height: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .sidebar .brand-name, .sidebar .nav-text { transition: none; }
+}
