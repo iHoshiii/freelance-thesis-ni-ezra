@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { DashboardNav } from "./dashboard-nav";
 import { Icon } from "./dashboard-icon";
 import { formatDate } from "@/lib/scans/dates";
-import { RefreshButton } from "./refresh-button";
+import { RefreshButton, QueryActivity } from "./refresh-button";
+import { PageSkeleton } from "./page-skeleton";
 import { useSidebar } from "./sidebar-state";
 
-export function WorkspaceShell({ children, current = "/", title = "Overview", lastUpload = null }: {
+export function WorkspaceShell({ children, current = "/", title = "Overview", lastUpload }: {
   children: ReactNode; current?: string; title?: string; lastUpload?: string | null;
 }) {
   const { collapsed, toggle } = useSidebar();
@@ -22,12 +23,13 @@ export function WorkspaceShell({ children, current = "/", title = "Overview", la
       <div id="sidebar-navigation"><DashboardNav current={current} /></div>
     </aside>
     <main id="main-content" tabIndex={-1}>
-      <header className="topbar"><h1>{title}</h1><div className="upload-status"><span>Last upload <strong>{lastUpload ? formatDate(lastUpload, true) : "Not yet"}</strong></span><RefreshButton /></div></header>
+      <header className="topbar"><h1>{title}</h1><div className="upload-status">{lastUpload !== undefined && <span>Last upload <strong>{lastUpload ? formatDate(lastUpload, true) : "Not yet"}</strong></span>}<QueryActivity /><RefreshButton current={current} /></div></header>
       <div className="dashboard-content">{children}</div>
     </main>
   </div>;
 }
 
-export function WorkspaceLoading() {
-  return <WorkspaceShell><div className="loading-panel" role="status">Loading scans…</div></WorkspaceShell>;
+export function WorkspaceLoading({ title = "Overview" }: { title?: string }) {
+  const current = ({ Overview: "/", Scans: "/scans", Recommendations: "/recommendations", Statistics: "/statistics", Status: "/status", Devices: "/devices", Setup: "/setup" }[title] ?? "");
+  return <WorkspaceShell current={current} title={title}><PageSkeleton title={title} /></WorkspaceShell>;
 }

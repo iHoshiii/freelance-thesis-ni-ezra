@@ -16,5 +16,5 @@ async function DeviceContent() {
 }
 
 export default function Devices() {
-  return <Suspense fallback={<WorkspaceLoading />}><DeviceContent /></Suspense>;
+  return <Suspense fallback={<WorkspaceLoading title="Devices" />}><DeviceContent /></Suspense>;
 }
