@@ -10,6 +10,7 @@
 @import "./styles/workspace-responsive.css";
 @import "./styles/loading.css";
 @import "./styles/sidebar.css";
+@import "./styles/sidebar-popup.css";
 @import "./styles/interface.css";
 @import "./styles/overview.css";
 @import "./styles/recommendations.css";
