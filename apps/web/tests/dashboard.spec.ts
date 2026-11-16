@@ -7,7 +7,7 @@ test("overview counts every allowed scan and distinguishes unreported device sta
   await expect(totals.locator(".summary-card").nth(0)).toContainText("7");
   await expect(totals.locator(".summary-card").nth(1)).toContainText("30");
   await expect(totals.locator(".summary-card").nth(2)).toContainText("266");
-  await expect(page.getByRole("region", { name: "Device monitor" })).toContainText("Not reported");
+  await expect(page.getByRole("region", { name: "Device monitor" }).locator(".monitor-metrics > div").last()).toContainText("--");
   await expect(page.getByText("PRIVATE DEVICE")).toHaveCount(0);
 });
 
@@ -28,7 +28,7 @@ test("status checks the real server and database and handles a lost server", asy
   await page.route("**/api/health", (route) => route.abort());
   await page.goto("/status");
   await expect(page.getByRole("region", { name: "Connection health" })).toContainText("Cannot reach server");
-  await expect(page.getByRole("region", { name: "Device monitor" })).toContainText("Not confirmed");
+  await expect(page.getByRole("region", { name: "Device monitor" }).locator(".sensor-row").first()).toContainText("--");
 });
 
 test("device heartbeat requires authentication and drives battery, queue and sensor health", async ({ page }) => {
