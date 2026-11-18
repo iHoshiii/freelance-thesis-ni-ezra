@@ -3,6 +3,7 @@
 
 struct SensorReading {
   float ph = NAN, moisture = NAN, temperature = NAN;
+  float phBeforeOffset = NAN, phAppliedOffset = NAN;
 };
 
 void beginSensors();

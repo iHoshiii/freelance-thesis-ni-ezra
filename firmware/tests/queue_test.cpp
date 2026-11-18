@@ -3,6 +3,7 @@
 #include <iostream>
 
 void testRecovery();
+void testPhOffset();
 
 static void testAcknowledgements() {
   FakeStore store;
@@ -74,7 +75,8 @@ int main() {
     testCapacity();
     testFailures();
     testRecovery();
-    std::cout << "PASS: acknowledgements, duplicate prevention, capacity, write/delete failures, restart recovery and corruption.\n";
+    testPhOffset();
+    std::cout << "PASS: queue acknowledgements, capacity, restart recovery, corruption and pH offset math.\n";
   } catch (const std::exception& error) {
     std::cerr << "FAIL: " << error.what() << "\n";
     return 1;

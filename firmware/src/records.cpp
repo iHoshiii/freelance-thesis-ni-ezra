@@ -40,6 +40,11 @@ String buildRecord(const String& id, const String& sample, const String& locatio
   doc["temperatureC"] = nullptr;
   doc["npkRaw"] = nullptr;
   if (isfinite(reading.ph)) doc["ph"] = reading.ph;
+  if (isfinite(reading.ph) && isfinite(reading.phBeforeOffset) && isfinite(reading.phAppliedOffset)) {
+    auto correction = doc.createNestedObject("phCalibration");
+    correction["beforeOffset"] = reading.phBeforeOffset;
+    correction["offset"] = reading.phAppliedOffset;
+  }
   if (isfinite(reading.moisture)) doc["moisturePercent"] = reading.moisture;
   if (isfinite(reading.temperature)) doc["temperatureC"] = reading.temperature;
   String payload;

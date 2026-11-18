@@ -22,6 +22,6 @@ export function WorkspaceShell({ children, current = "/", title = "Overview", la
 }
 
 export function WorkspaceLoading({ title = "Overview" }: { title?: string }) {
-  const current = ({ Overview: "/", Scans: "/scans", Recommendations: "/recommendations", Statistics: "/statistics", Status: "/status", Devices: "/devices", Setup: "/setup" }[title] ?? "");
+  const current = ({ Overview: "/", Scans: "/scans", Recommendations: "/recommendations", Statistics: "/statistics", Configuration: "/configuration", Status: "/status", Devices: "/devices", Setup: "/setup" }[title] ?? "");
   return <WorkspaceShell current={current} title={title}><PageSkeleton title={title} /></WorkspaceShell>;
 }

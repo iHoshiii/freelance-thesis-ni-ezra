@@ -93,6 +93,18 @@ sync
 
 `read` measures without saving. `scan` saves one immutable record with a fresh UUID. Location is optional. All-null readings are refused. `sync` releases a paused upload retry after a configuration/server fix. Sample and location are entered per scan, so separate samples are not silently assigned a fixed location.
 
+## Adjust the pH offset
+
+The website's Configuration tab calculates an offset from a verified reference and a device reading. Save the check in the browser, then copy its command into Serial Monitor:
+
+```text
+ph-offset
+ph-offset soil-001 1.000000
+read
+```
+
+The first command shows the current offset. The second example adds +1 to future pH acquisitions for device `soil-001` and saves it in NVS, which survives restarts. Use the actual device ID. Set an offset of `0` to reset it. This changes neither queued nor uploaded scans. Future scan payloads include pH before offset and the applied offset. The updated web API must be running to accept that metadata. Values outside pH 0 to 14 remain unavailable. Initial voltage calibration is still required. See [the calibration workflow](../docs/PH_CALIBRATION_CONFIGURATION.md).
+
 ## Queue behavior and verification
 
 The limit is initially **100 scans**, at most 4096 bytes each, with a flash reserve. Actual usable capacity depends on the board and filesystem. A full queue refuses new scans and preserves existing ones. Do not change the flash partition layout or device identity while scans remain pending.

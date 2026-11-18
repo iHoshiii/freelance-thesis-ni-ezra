@@ -6,6 +6,7 @@
 #include "sensors.h"
 #include "sync.h"
 #include "transport.h"
+#include "ph_correction.h"
 
 static FlashStore flash;
 static ScanQueue queue(flash, Config::queueLimit, Config::recordLimit, Config::flashReserve);
@@ -20,6 +21,8 @@ void setup() {
   if (storageMounted) {
     if (!queue.recover()) Serial.println(queue.error().c_str());
   } else Serial.println("Flash not mounted. For a NEW board, type format ERASE once. Existing data: do not format.");
+  beginPhCorrection();
+  printPhOffset();
   beginSensors();
   readSensors();
   beginNetwork();
