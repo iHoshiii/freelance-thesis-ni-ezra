@@ -33,6 +33,14 @@ async function ingest(value: typeof payload) {
 }
 
 describe("shared workspace SQL migrations", () => {
+  it("retains acquisition-time pH correction in the immutable payload on retry", async () => {
+    const record = { ...payload, ph: 4, phCalibration: { beforeOffset: 3, offset: 1 } };
+    const first = await ingest(record);
+    expect(await ingest(record)).toEqual(first);
+    const rows = await db.query<{ ph: number; payload: typeof record }>("SELECT ph, payload FROM public.readings");
+    expect(rows.rows[0].ph).toBe(4);
+    expect(rows.rows[0].payload.phCalibration).toEqual({ beforeOffset: 3, offset: 1 });
+  });
   it("provisions devices without creating user accounts", async () => {
     expect((await db.query<{ owner_id: string | null }>("SELECT owner_id FROM public.devices")).rows[0].owner_id).toBeNull();
   });

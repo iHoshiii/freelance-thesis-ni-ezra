@@ -19,6 +19,7 @@ for (let index = 0; index < 265; index++) {
   const record = { deviceId: "soil-test", recordId: randomUUID(), sampleId: `scan-${String(index + 1).padStart(3, "0")}`,
     location: index % 2 ? "South plot" : "North plot", acquiredAt, timeQuality: "synced",
     ph: index === 0 ? 0 : 6.2 + index % 5 / 10, moisturePercent: index === 3 ? null : 40 + index % 40,
+    ...(index === 1 ? { phCalibration: { beforeOffset: 5.3, offset: 1 } } : {}),
     temperatureC: 24 + index % 7, npkRaw: { n: 20 + index, p: 15, k: 80, unit: "raw" } };
   await db.query("SELECT public.ingest_reading($1, $2::jsonb)", [record.deviceId, JSON.stringify(record)]);
 }

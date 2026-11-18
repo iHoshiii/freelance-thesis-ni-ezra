@@ -8,6 +8,7 @@ export type Scan = {
   receivedAt: string;
   timeQuality: string;
   ph: number | null;
+  phCalibration?: { beforeOffset: number; offset: number } | null;
   moisturePercent: number | null;
   temperatureC: number | null;
   npkRaw: { n: number; p: number; k: number; unit: string } | null;

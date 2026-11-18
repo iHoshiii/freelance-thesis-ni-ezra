@@ -65,6 +65,8 @@ The website is deliberately shared: anyone who can access the deployment can vie
 
 `npkRaw`, when present, contains numeric `n`, `p`, `k`, and a nonempty `unit`. These values remain provisional until reference validation. Input range checks do not establish calibration or agronomic validity.
 
+`phCalibration` is optional acquisition metadata containing `beforeOffset` and `offset`. When supplied, the recorded `ph` must equal their sum within floating-point tolerance and remain between 0 and 14. Existing readings remain supported. The original JSON payload preserves the correction on retries. The [Configuration workflow](PH_CALIBRATION_CONFIGURATION.md) applies offsets to future device acquisitions through USB Serial.
+
 Only a successful database transaction returns `{ "acknowledgedRecordId": "...", "receivedAt": "..." }`. The `(device_id, record_id)` primary key prevents duplicate scans on retries. Identical retries return the original acknowledgement. Conflicting reuse returns 409 and preserves the first payload. Storage failures return 503 without acknowledgement.
 
 ## Dashboard rules
@@ -83,7 +85,7 @@ From `apps/web`, run `npm test`, `npm run lint`, `npm run typecheck`, and `npm r
 
 ## Remaining device and research work
 
-The firmware scaffold only prints a startup message. Sensor drivers, calibration, persistent flash queue, restart recovery, queue-full behavior, HTTPS transport, retry/backoff, and clock handling require implementation after confirming the exact hardware and electrical design. No OLED, microSD, RTC, or pin assignments are assumed.
+The [firmware starter](../firmware/README.md) implements a bounded LittleFS queue, restart recovery, matching acknowledgements, Wi-Fi reconnection, HTTPS transport, retry/backoff, NTP clock handling and device reports. Optional DS18B20 and calibrated analog pH/moisture adapters are disabled initially. The LAFVIN classic ESP32 target, suggested pins, electrical design, calibration and behavior under real power/network failures require hardware verification. NPK and battery measurement await the actual components. No OLED, microSD or standalone RTC is assumed.
 
 Train and evaluate the advisor using approved reference data and sample-separated train/test partitions before integrating inference. Provisional NPK values must not become validated inputs automatically. Neither offline web browsing nor an on-device advisor is included.
 
