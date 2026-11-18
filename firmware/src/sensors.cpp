@@ -1,5 +1,7 @@
 #include "sensors.h"
 #include "sensor_settings.h"
+#include "ph_correction.h"
+#include "ph_offset_math.h"
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
@@ -58,8 +60,11 @@ SensorReading readSensors() {
     phStatus = voltage > 50 && voltage < 3050 ? "unknown" : "error";
     if (phCalibrated() && String(phStatus) != "error") {
       float value = S::phValueA + (voltage - S::phMillivoltsA) * (S::phValueB - S::phValueA) / (S::phMillivoltsB - S::phMillivoltsA);
-      if (isfinite(value) && value >= 0 && value <= 14) { reading.ph = value; phStatus = "ok"; }
-      else phStatus = "error";
+      float corrected = phCorrectionReady() ? correctedPh(value, phOffset()) : NAN;
+      Serial.printf("pH before offset: %.6f | Offset: %+.6f\n", value, phOffset());
+      if (isfinite(corrected)) {
+        reading.ph = corrected; reading.phBeforeOffset = value; reading.phAppliedOffset = phOffset(); phStatus = "ok";
+      } else phStatus = "error";
     }
   }
   if (S::moistureEnabled && adcPin(S::moisturePin)) {

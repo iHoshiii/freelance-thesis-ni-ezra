@@ -2,10 +2,12 @@
 #include "records.h"
 #include "sensors.h"
 #include "sync.h"
+#include "ph_correction.h"
 #include <LittleFS.h>
 
 void printHelp() {
   Serial.println("Commands (send newline): help, status, read, scan SAMPLE|LOCATION, sync");
+  Serial.println("pH calibration: ph-offset (show), ph-offset DEVICE_ID OFFSET (save)");
   Serial.println("First use only: format ERASE initializes flash and erases ALL queued scans.");
 }
 
@@ -35,7 +37,8 @@ static void capture(ScanQueue& queue, bool mounted, String metadata) {
 static void execute(String line, ScanQueue& queue, bool mounted) {
   line.trim();
   if (line == "help") printHelp();
-  else if (line == "status") printDeviceStatus(queue, mounted);
+  else if (line == "status") { printPhOffset(); printDeviceStatus(queue, mounted); }
+  else if (line == "ph-offset" || line.startsWith("ph-offset ")) { handlePhOffsetCommand(line); markReportDirty(); }
   else if (line == "sync") { requestSync(); Serial.println("Upload retry requested."); }
   else if (line == "read") {
     auto reading = readSensors();

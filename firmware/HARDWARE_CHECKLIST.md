@@ -16,5 +16,6 @@ Record firmware commit, board marking, flash size, configured queue limit and da
 | Interrupted write | On disposable test data, interrupt power repeatedly during save | Fully saved scans survive. Incomplete/corrupt files are retained and stop acquisition for inspection. Never claim zero data loss from host tests alone. |
 | Unknown clock | Power up with no NTP access and capture a real scan | `timeQuality=unknown`, `acquiredAt=null`. Upload later preserves those fields. |
 | Sensor unplug | Disconnect a verified temperature sensor, send `read` | Temperature unavailable, sensor error reported, previous queued records preserved. |
+| pH offset | On verified reference data, send `ph-offset DEVICE_ID 1`, then `read` and restart | Future pH increases by 1 when within range, offset survives restart, old queue entries stay unchanged. A different device ID is refused. Reset offset to 0 after this disposable check. |
 
 Before field collection, verify the actual storage capacity, sensor calibration, power circuit, scan procedure and acceptable error limits with the study's reference methods. The initial firmware captures manually through USB Serial. A field capture button and its pin can be added once the physical assembly is confirmed.

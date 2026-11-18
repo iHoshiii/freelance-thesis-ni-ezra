@@ -6,6 +6,7 @@
 - **Scans:** latest scan, paginated history, quick date periods, location/search/custom filters, comparison and CSV export.
 - **Recommendations:** checks for the latest scan; pH grouping, moisture calibration, crop-dependent temperature targets and NPK validation requirements. No unvalidated fertilizer dose is generated.
 - **Statistics:** pH, moisture and temperature distributions, average/min/max and missing readings; NPK coverage; dated scan counts by week, month, year or all time and location. Queries cover every matching record.
+- **Configuration:** pH reference/measurement comparison, offset preview, device-specific browser records and JSON export. Apply offsets using the generated ESP32 USB Serial command. Stored scan values are not recalculated. See [the calibration workflow](../../../docs/PH_CALIBRATION_CONFIGURATION.md).
 - **Status:** independent browser-to-server and database checks, schema readiness, device readiness and each sensor's reported condition. Setup and registered devices remain reachable here.
 
 Periods called week/month mean rolling 7/30 calendar days including today in UTC+8, rather than the previous calendar week/month. All-time counts include unknown scan times; date-filtered statistics exclude them. Offline queue counts are separate from synced records and come from the selected device's latest heartbeat.

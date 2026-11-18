@@ -4,6 +4,7 @@ import type { SidebarPopupName } from "./sidebar-popup";
 
 export function SidebarPopupContent({ name, onNavigate }: { name: SidebarPopupName; onNavigate: () => void }) {
   if (name === "Settings") return <div className="sidebar-popup-links">
+    <Link href="/configuration" onClick={onNavigate}><span><strong>Configuration</strong><small>Calibrate the pH calculation</small></span><Icon name="arrow" /></Link>
     <Link href="/devices" onClick={onNavigate}><span><strong>Devices</strong><small>View your field units</small></span><Icon name="arrow" /></Link>
     <Link href="/setup" onClick={onNavigate}><span><strong>Workspace setup</strong><small>Connect your device and database</small></span><Icon name="arrow" /></Link>
   </div>;
