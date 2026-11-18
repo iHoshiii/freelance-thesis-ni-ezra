@@ -1,5 +1,6 @@
 #pragma once
-#include "scan_queue.h"
+#include <Arduino.h>
 
+void captureScan(const String& sample, const String& location);
 void printHelp();
-void handleSerial(ScanQueue& queue, bool storageMounted);
+void handleSerial();

@@ -1,128 +1,56 @@
-# Soil analyzer firmware
+# ESP32 firmware
 
-Prepared for the LAFVIN ESP32 Basic Starter Kit. The generic `esp32dev` target assumes a classic ESP32/ESP-32S module with 4 MB flash. Confirm the metal module marking when it arrives. An ESP32-S3 or ESP32-C3 requires a different target before uploading. The [manufacturer's matching kit](https://lafvintech.com/products/lafvin-basic-starter-kit-for-esp32-esp-32s-wifi-i-ot-development-board-for-arduino-project-learning-kit-with-tutorials) and [PlatformIO board reference](https://docs.platformio.org/en/stable/boards/espressif32/esp32dev.html) support this provisional selection. The exact Shopee variant could not be inspected.
+The firmware builds for a classic ESP32-WROOM-32 / ESP-32S development board with exposed GPIOs. USB serial remains available for setup and diagnostics. Scan and View are physical buttons.
 
-## What is ready
+## Windows setup and build
 
-- Wi-Fi reconnection, NTP time, authenticated JSON uploads and 30-second device reports.
-- Bounded LittleFS scan queue, checksum verification, restart recovery, retry backoff and matching upload acknowledgements. A failed acknowledgement never removes a scan.
-- Manual sample capture through Serial. No automatic scans, invented measurements or assumed sensor wiring.
-- Optional DS18B20 temperature driver and two-point analog pH/moisture adapters. All inputs are disabled initially.
-- Battery remains null. NPK remains null and its driver awaits the purchased probe's protocol/register map.
-
-## Before the board arrives
-
-Install the **PlatformIO IDE** extension in VS Code and open it once. Open this `firmware` folder as the PlatformIO project. From a PowerShell terminal in this folder:
+Run from the repository root in PowerShell:
 
 ```powershell
-./firmware.ps1 configure
-./firmware.ps1 build
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 build
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 ports
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 upload -Port COM5
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 monitor -Port COM5
 ```
 
-`configure` creates `include/secrets.h` without overwriting an existing file. This file is ignored by Git. Fill in Wi-Fi name/password, device ID, token and server URL. The code also builds without it, using empty connection settings.
+Replace COM5 with the detected ESP32 port. Close the serial monitor before uploading. Use a USB data cable. The script uses PlatformIO on PATH or the standard user install at `%USERPROFILE%\.platformio\penv\Scripts\platformio.exe`. The build installs the pinned ESP32 platform and Arduino libraries on first use.
 
-Provision the device once using the [server setup instructions](../docs/SYSTEM_SETUP.md#connect-the-system), or use the token already provisioned for that ID. Never replace a registered device just to obtain another token. Keep database credentials on the server. The device needs only its per-device token. Add its ID to `WORKSPACE_DEVICE_IDS`, run `npm run db:setup` and restart the web server.
+## Proposed pin map
 
-### Local laptop server
+Use the [illustrated bench wiring diagram](../docs/images/design/esp32-bench-wiring.png) with a classic ESP32-WROOM-32 DevKit. With power off, match the **GPIO numbers** to the labels on the actual board. For each four-leg tactile button, use contacts that are open when released.
 
-For a private bench network, edit these values in `include/secrets.h`:
-
-```cpp
-#define SOIL_SERVER_URL "http://192.168.1.50:3000"
-#define SOIL_ALLOW_LOCAL_HTTP true
-```
-
-Replace the address with your laptop's current Wi-Fi IPv4 address from `ipconfig`. Use the same reachable Wi-Fi network on both devices. `localhost` on the ESP32 refers to itself. HTTP is accepted only for literal private IPv4 addresses and explicitly enabled bench use. Your token is visible on that network, so use a trusted network and a dedicated development device/token. The URL must contain only the server origin, without `/api` or a trailing slash.
-
-Start the web app from `apps/web` with `npm run dev`. Ensure the server listens on the LAN address and Windows Firewall permits it on the intended private network. The kit uses 2.4 GHz Wi-Fi. If connection fails, check the access point's band and client isolation settings.
-
-### HTTPS server
-
-Set `SOIL_SERVER_URL` to the server's HTTPS origin and leave local HTTP disabled. Replace the empty root CA definition with the issuer's PEM root certificate:
-
-```cpp
-static constexpr char SOIL_ROOT_CA[] = R"PEM(-----BEGIN CERTIFICATE-----
-PASTE THE ACTUAL ROOT CERTIFICATE HERE
------END CERTIFICATE-----
-)PEM";
-```
-
-TLS verifies certificates and waits for a valid device clock. It does not disable verification or follow redirects. An offline boot can still record scans with unknown acquisition time. Connecting later does not rewrite saved timestamps.
-
-## Arrival day: USB only
-
-1. Confirm the module is classic ESP32/ESP-32S and use a USB data cable. Leave sensors, batteries and solar power disconnected during the first check.
-2. Find the new port, then upload and open Serial:
-
-```powershell
-./firmware.ps1 ports
-./firmware.ps1 upload -Port COM5
-./firmware.ps1 monitor -Port COM5
-```
-
-Replace `COM5` with the actual port. If upload stays at Connecting, hold the board's BOOT button while connecting, then release it when writing begins. If no port appears, check the cable and identify the USB-UART chip before installing its matching driver. Close Serial Monitor before uploading. Exit PlatformIO monitor with Ctrl+C.
-
-3. On a **new board only**, if Serial reports that flash is not mounted, send `format ERASE` once. This erases queued scans and creates the filesystem. Never format an existing research queue to troubleshoot a mount failure. Firmware does not automatically format flash. Do not use Upload Filesystem or erase-flash commands on a board holding pending scans.
-4. Send `status`. Confirm chip/flash details, Wi-Fi, upload configuration and clock. With no sensors enabled, `ready` is false and sensor states are `not_installed`.
-5. Check the website's Status tab for a real heartbeat. A database/server error stays visible in Serial. No scan should appear until real sensor measurements are recorded.
-
-Commands require Enter/newline. The helper monitor enables line entry. A different serial terminal should use 115200 baud and newline endings.
-
-## Add the sensors later
-
-Edit [sensor settings](include/sensor_settings.h) only after checking the actual wiring. GPIO numbers are configurable suggestions for a classic ESP32, not connector positions or a verified assembly diagram. Never feed a 5 V signal to an ESP32 input. pH is measured in the separately prepared soil-water suspension.
-
-| Input | Initial setting | Preparation |
+| Module | ESP32 connections | Bench notes |
 | --- | --- | --- |
-| DS18B20 | Disabled, GPIO 4 | Confirm a three-wire probe, 3.3 V-compatible wiring and the required data pull-up. Enable `temperatureEnabled`. Compare against a reference thermometer. |
-| Analog pH | Disabled, ADC1 GPIO 34 | Confirm output voltage and module type. Enable `phEnabled`, run `read` in two known buffer solutions, then enter the paired millivolt/pH calibration points. |
-| Capacitive moisture | Disabled, ADC1 GPIO 35 | Enable `moistureEnabled`, use `read` to collect approved dry/wet reference millivolts, then enter the two reference points. The result is a reference-scaled percentage, not validated volumetric water content. |
-| NPK / RS485 | No driver enabled | Confirm probe model, supply, 3.3 V interface, baud/address/register map and scaling before implementation. |
-| Battery | No measurement circuit assumed | Add an approved voltage measurement circuit and battery-specific conversion before reporting a percentage. |
+| SSD1306 128×64 I2C OLED | SDA 21, SCL 22 | 3.3 V supply and pull-ups. Default address 0x3C. Check the board marking and change the address in `include/config.h` if needed. |
+| DS3231 RTC, for offline timestamps | SDA 21, SCL 22 | 3.3 V I2C, address 0x68. Use the cell specified for the chosen breakout. |
+| 3.3 V SPI microSD breakout | SCK 18, MISO 19, MOSI 23, CS 13 | Use a 3.3 V-compatible breakout and an 8–32 GB FAT32 card. |
+| Scan / View buttons | Scan 32, View 33 | Momentary buttons connect to GND. Internal pull-ups are used. |
+| LTE modem UART2 | ESP32 RX 16 ← modem TXD. ESP32 TX 17 → modem RXD. | Use a documented 3.3 V logic carrier. Power modem from a separate regulated supply suitable for bursts, with common ground. |
+| DS18B20 | Data 4 | Three-wire mode. Use a 4.7 kΩ pull-up from data to 3.3 V. |
+| pH analog interface | ADC1 34 | Check maximum analog voltage before connecting. Follow the interface and probe manuals. |
+| Capacitive moisture analog | ADC1 35 | Check analog voltage. Dry/wet calibration currently produces a reference index. |
+| Provisional RS485 NPK | UART1 RX 26, TX 27, direction 25 | 3.3 V MAX3485-class transceiver. Connect RO to RX, DI to TX and DE plus active-low RE to direction. Verify A/B, termination, bias and probe supply against the selected module. |
 
-Analog inputs without calibration print millivolts but do not upload guessed pH or moisture. Rail-level inputs and out-of-range conversions remain unavailable. The initial sensor `ok` state means the read passed basic checks, not laboratory validation. When several temperature probes are connected, this initial driver uses index zero and needs explicit probe-address selection.
+The OLED and RTC share SDA and SCL. Verify that the I2C pull-ups go to 3.3 V and check the breakouts for installed pull-ups before adding any. For the referenced SPI microSD breakout, `SO` connects to MISO and `SI` to MOSI. [Adafruit DS3231 breakout](https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout/pinouts), [Adafruit microSD pinout](https://learn.adafruit.com/adafruit-microsd-spi-sdio/pinouts)
 
-After configuring a real sensor, rebuild and upload, then send:
+For the Waveshare SIM7600G-H 4G Module shown, use a dedicated regulated 5 V supply on the module's USB-C port. Connect the module GND to the ESP32 GND and leave VIO open for the carrier's default 3.3 V UART logic. Follow the module's startup procedure and connect the LTE antenna before use. [Waveshare module documentation](https://www.waveshare.com/wiki/SIM7600G-H_4G_Module)
 
-```text
-read
-scan sample-001|North plot
-status
-sync
-```
+The bench sample uses a 10 kΩ series resistor, a 20 kΩ resistor to ground and a 100 nF capacitor to ground for each DFRobot analog input. A 3.0 V sensor output gives about 2.0 V at the ADC. Measure the voltage at GPIO34 or GPIO35 and calibrate with the circuit in place. [DFRobot pH kit](https://wiki.dfrobot.com/sen0161-v2/), [DFRobot moisture sensor](https://wiki.dfrobot.com/sen0193), [Espressif ADC guidance](https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32/schematic-checklist.html#adc)
 
-`read` measures without saving. `scan` saves one immutable record with a fresh UUID. Location is optional. All-null readings are refused. `sync` releases a paused upload retry after a configuration/server fix. Sample and location are entered per scan, so separate samples are not silently assigned a fixed location.
+## Configure and operate
 
-## Adjust the pH offset
+1. Wire and verify sensors individually. Enable the installed inputs in `include/sensor_settings.h`. Enter measured pH calibration points and moisture endpoints. All sensor inputs are disabled in the stock build so an unconnected board reports unavailable readings.
+2. If using NPK, confirm the manufacturer documents three consecutive unsigned N, P and K registers in that order, an 8N1 Modbus RTU serial setting, and read function 03 or 04. Configure the address, baud and zero-based register. The firmware displays and saves raw register values. Changes to method, scaling, or reported units belong in the calibration and validation work.
+3. Power on with a FAT32 card present. Set the DS3231 using the serial command `rtc-set YYYY-MM-DDTHH:MM:SSZ` with the actual UTC time. Philippine time is UTC+8. An unset or failed clock produces a blank timestamp and `unknown` quality.
+4. Let the probes stabilize under the approved procedure. Press **Scan** to capture once. Press **View** to switch between measurements and raw NPK. The OLED shows the latest attempt from the current session. Use **Scan** for a new attempt after a storage error.
+5. To enable SMS, create `firmware/include/secrets.h` from `firmware/include/secrets.example.h` if it is missing. Set `SOIL_SMS_RECIPIENT` to a consenting recipient's international number. Use a provisioned SMS-capable SIM in the powered modem. The OLED reports modem submission status. Verify phone receipt separately.
 
-The website's Configuration tab calculates an offset from a verified reference and a device reading. Save the check in the browser, then copy its command into Serial Monitor:
+At 115200 baud with newline, `read` previews sensors without saving or sending SMS, `scan SAMPLE|LOCATION` saves with optional location, and `status` reports clock, storage mount and pH offset. A button scan uses its record UUID as the sample ID. Match the first eight displayed ID characters with the full ID in the exported file and field log. `ph-offset DEVICE_ID OFFSET` preserves the original NVS calibration workflow and applies only to future scans.
 
-```text
-ph-offset
-ph-offset soil-001 1.000000
-read
-```
+## Local files and SMS
 
-The first command shows the current offset. The second example adds +1 to future pH acquisitions for device `soil-001` and saves it in NVS, which survives restarts. Use the actual device ID. Set an offset of `0` to reset it. This changes neither queued nor uploaded scans. Future scan payloads include pH before offset and the applied offset. The updated web API must be running to accept that metadata. Values outside pH 0 to 14 remain unavailable. Initial voltage calibration is still required. See [the calibration workflow](../docs/PH_CALIBRATION_CONFIGURATION.md).
+The firmware writes one `/scans/<record-id>.csv` per capture with at least one usable channel. It verifies a temporary `.part` file and the renamed CSV before reporting success. Partial files may remain after an interrupted write. Keep them for inspection and import committed CSVs. Turn the device off before swapping or removing the card. No capture erases existing records. Power interruption and card capacity limits still need bench verification.
 
-## Queue behavior and verification
+For each confirmed save, a configured and idle modem gets one SMS submission attempt with the short scan ID, time, pH, moisture index and temperature. A busy modem skips the new text while the new scan remains on the card. A timeout after submission reports unconfirmed and pauses future SMS until restart to avoid misattributing late responses. A modem acknowledgement means submitted. Measure handset receipt and latency separately.
 
-The limit is initially **100 scans**, at most 4096 bytes each, with a flash reserve. Actual usable capacity depends on the board and filesystem. A full queue refuses new scans and preserves existing ones. Do not change the flash partition layout or device identity while scans remain pending.
-
-A scan is written to a temporary file, flushed, read back, checked and renamed before Serial says Saved. On restart, complete temporary records are recovered. Incomplete/corrupt files stop the queue and remain on flash for inspection. A remote save followed by power loss can cause a duplicate retry, which the API handles using the original record ID. Uploads can arrive in UUID order after restart, so acquisition timestamps determine measurement history.
-
-HTTP 4xx responses pause scan retries except 408/429. Fix the cause and send `sync` or restart. Transient failures use increasing delays capped at 60 seconds. Every retry uses the saved payload and ID. Heartbeats never acknowledge a scan. A lost heartbeat retries on the next reporting interval. Network operations can briefly delay Serial while their timeouts expire.
-
-Portable queue tests run without hardware using a C++11 compiler:
-
-```powershell
-python tests/run_tests.py --compiler "g++"
-```
-
-For the optional local test toolchain prepared during development:
-
-```powershell
-./.venv/Scripts/python.exe tests/run_tests.py --compiler ".venv/Scripts/python.exe -m ziglang c++"
-```
-
-Tests exercise the production queue code with an in-memory storage adapter, including restart recovery, partial writes, corruption, capacity and acknowledgement failures. Compilation and host tests cannot verify actual flash power-loss behavior, sensors, USB upload or Wi-Fi. Follow [the hardware acceptance checklist](HARDWARE_CHECKLIST.md) when the board arrives.
+Existing boards can use `legacy-export` over serial to read checksum-valid legacy LittleFS JSON records, including recoverable temporary files. The new firmware does not format legacy flash or upload its contents. Keep the original `SOIL_DEVICE_ID` to retain a previously saved pH offset.

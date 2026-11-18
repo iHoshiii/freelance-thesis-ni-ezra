@@ -1,8 +1,7 @@
 #include "records.h"
 #include "config.h"
-#include <ArduinoJson.h>
+#include "npk.h"
 #include <esp_system.h>
-#include <time.h>
 
 String createRecordId() {
   uint8_t bytes[16];
@@ -16,38 +15,46 @@ String createRecordId() {
   return value;
 }
 
-bool clockSynced() { return time(nullptr) >= 1704067200; }
+static String csvCell(const String& value) {
+  String escaped = value;
+  escaped.replace("\"", "\"\"");
+  return "\"" + escaped + "\"";
+}
 
-String buildRecord(const String& id, const String& sample, const String& location, const SensorReading& reading) {
-  DynamicJsonDocument doc(2048);
-  doc["deviceId"] = Config::deviceId;
-  doc["recordId"] = id;
-  doc["sampleId"] = sample;
-  if (location.length()) doc["location"] = location;
-  bool synced = clockSynced();
-  doc["timeQuality"] = synced ? "synced" : "unknown";
-  doc["acquiredAt"] = nullptr;
-  if (synced) {
-    time_t now = time(nullptr);
-    struct tm utc;
-    gmtime_r(&now, &utc);
-    char timestamp[25];
-    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", &utc);
-    doc["acquiredAt"] = timestamp;
+static String numeric(float value, unsigned decimals = 3) {
+  return isfinite(value) ? String(value, decimals) : String();
+}
+
+static String raw(int32_t value) { return value >= 0 ? String(value) : String(); }
+
+String recordCsv(const ScanRecord& record) {
+  const auto& r = record.reading;
+  String csv = "device_id,record_id,sample_id,location,acquired_at_utc,time_quality,ph,ph_before_offset,ph_offset,"
+               "moisture_ref_pct,temperature_c,n_raw,p_raw,k_raw,ph_state,moisture_state,temperature_state,npk_state\r\n";
+  csv += csvCell(Config::deviceId) + "," + record.id + "," + csvCell(record.sample) + "," + csvCell(record.location);
+  csv += "," + record.acquiredAt + (record.acquiredAt.isEmpty() ? ",unknown," : ",rtc,");
+  csv += numeric(r.ph, 6) + "," + numeric(r.phBeforeOffset, 6) + "," + numeric(r.phAppliedOffset, 6);
+  csv += "," + numeric(r.moisture) + "," + numeric(r.temperature);
+  csv += "," + raw(r.nitrogenRaw) + "," + raw(r.phosphorusRaw) + "," + raw(r.potassiumRaw);
+  csv += String(",") + phState() + "," + moistureState() + "," + temperatureState() + "," + npkState() + "\r\n";
+  return csv;
+}
+
+static String forSms(float value, const char* unit) {
+  return isfinite(value) ? String(value, 2) + unit : String("NA");
+}
+
+String smsSummary(const ScanRecord& record) {
+  const auto& r = record.reading;
+  const String time = record.acquiredAt.isEmpty() ? "time unknown" : record.acquiredAt;
+  return "Soil " + record.id.substring(0, 8) + " " + time + ": pH " + forSms(r.ph, "") +
+      ", moisture index " + forSms(r.moisture, "%") + ", temp " + forSms(r.temperature, " C") + ".";
+}
+
+bool validLabel(const String& label) {
+  if (label.isEmpty() || label.length() > 120 || !isalnum(static_cast<unsigned char>(label[0]))) return false;
+  for (size_t i = 0; i < label.length(); ++i) {
+    if (label[i] < 32 || label[i] > 126 || label[i] == '|') return false;
   }
-  doc["ph"] = nullptr;
-  doc["moisturePercent"] = nullptr;
-  doc["temperatureC"] = nullptr;
-  doc["npkRaw"] = nullptr;
-  if (isfinite(reading.ph)) doc["ph"] = reading.ph;
-  if (isfinite(reading.ph) && isfinite(reading.phBeforeOffset) && isfinite(reading.phAppliedOffset)) {
-    auto correction = doc.createNestedObject("phCalibration");
-    correction["beforeOffset"] = reading.phBeforeOffset;
-    correction["offset"] = reading.phAppliedOffset;
-  }
-  if (isfinite(reading.moisture)) doc["moisturePercent"] = reading.moisture;
-  if (isfinite(reading.temperature)) doc["temperatureC"] = reading.temperature;
-  String payload;
-  if (!doc.overflowed()) serializeJson(doc, payload);
-  return payload;
+  return true;
 }

@@ -8,7 +8,8 @@ std::vector<std::string> FlashStore::files() {
   std::vector<std::string> result;
   File root = LittleFS.open("/");
   for (File file = root.openNextFile(); file; file = root.openNextFile()) {
-    result.push_back(std::string("/") + file.name());
+    std::string name = file.name();
+    result.push_back(name.empty() || name.front() == '/' ? name : "/" + name);
     file.close();
   }
   return result;
