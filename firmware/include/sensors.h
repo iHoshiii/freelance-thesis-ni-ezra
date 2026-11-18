@@ -9,7 +9,10 @@ struct SensorReading {
 
 void beginSensors();
 SensorReading readSensors();
-bool hasMeasurement(const SensorReading& reading);
+inline bool hasMeasurement(const SensorReading& reading) {
+  return isfinite(reading.ph) || isfinite(reading.moisture) || isfinite(reading.temperature)
+      || reading.nitrogenRaw >= 0;
+}
 const char* phState();
 const char* moistureState();
 const char* temperatureState();

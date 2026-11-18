@@ -10,6 +10,7 @@ An ESP32-based field instrument for measuring soil pH, moisture and temperature,
 - [Materials and testing budget](docs/COMPLETE_MATERIALS_AND_TESTING_BUDGET.md)
 - [Evaluation formulas](docs/DATA_EVALUATION_FORMULAS_REVIEW.md)
 - [Firmware build, pinout and configuration](firmware/README.md)
+- [Desktop OLED preview](firmware/README.md#preview-the-oled-on-your-monitor)
 - [Physical bench and field verification](firmware/HARDWARE_CHECKLIST.md)
 
 The study evaluates measurement agreement and repeatability, operation of the display, storage and SMS, and direct prototype cost. The reader uses rechargeable power with supplemental solar charging. NPK validation is provisional.

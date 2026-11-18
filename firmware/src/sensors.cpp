@@ -83,10 +83,6 @@ SensorReading readSensors() {
   return reading;
 }
 
-bool hasMeasurement(const SensorReading& reading) {
-  return isfinite(reading.ph) || isfinite(reading.moisture) || isfinite(reading.temperature)
-      || reading.nitrogenRaw >= 0;
-}
 const char* phState() { return phStatus; }
 const char* moistureState() { return moistureStatus; }
 const char* temperatureState() { return temperatureStatus; }

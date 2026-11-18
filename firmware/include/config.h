@@ -1,6 +1,6 @@
 #pragma once
 #include <Arduino.h>
-#if __has_include("secrets.h")
+#if !defined(SOIL_DESKTOP_PREVIEW) && __has_include("secrets.h")
 #include "secrets.h"
 #else
 #include "secrets.example.h"

@@ -94,16 +94,3 @@ void pollSms() {
 SmsStatus smsStatus(const String& id, SmsStatus initial) {
   return initial == SmsStatus::Pending && recordId == id ? result : initial;
 }
-
-const char* smsLabel(SmsStatus status) {
-  switch (status) {
-    case SmsStatus::Pending: return "SMS pending";
-    case SmsStatus::Submitted: return "SMS submitted";
-    case SmsStatus::Failed: return "SMS failed";
-    case SmsStatus::Unconfirmed: return "SMS unconfirmed";
-    case SmsStatus::Busy: return "SMS skipped: busy";
-    case SmsStatus::Paused: return "SMS paused";
-    case SmsStatus::Disabled: return "SMS disabled";
-  }
-  return "SMS unavailable";
-}

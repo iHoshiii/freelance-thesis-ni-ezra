@@ -15,6 +15,18 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 
 
 Replace COM5 with the detected ESP32 port. Close the serial monitor before uploading. Use a USB data cable. The script uses PlatformIO on PATH or the standard user install at `%USERPROFILE%\.platformio\penv\Scripts\platformio.exe`. The build installs the pinned ESP32 platform and Arduino libraries on first use.
 
+## Preview the OLED on your monitor
+
+From the repository root, open the desktop preview:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 preview
+```
+
+Press **Scan** to see a sample measurement, **View** to switch to the NPK screen, and **Reset** to see the startup screen. The drop-down shows SD, sensor, clock, and SMS scenarios. Choose **Open display.cpp** to edit the screen text or layout, then save. The preview rebuilds from the same screen source and uses the same Adafruit font and drawing code as the firmware.
+
+The desktop preview uses simulated sensor and module results. It runs locally and requires no ESP32 or OLED. It uses Python with Tkinter and a native C++ compiler such as Zig. Run the firmware build once to install the local PlatformIO libraries used by the preview.
+
 ## Proposed pin map
 
 Use the [illustrated bench wiring diagram](../docs/images/design/esp32-bench-wiring.png) with a classic ESP32-WROOM-32 DevKit. With power off, match the **GPIO numbers** to the labels on the actual board. For each four-leg tactile button, use contacts that are open when released.

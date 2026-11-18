@@ -21,7 +21,7 @@ static void startFrame() {
   oled.setCursor(0, 0);
 }
 
-void showMessage(const char* first, const char* second) {
+static void showMessage(const char* first, const char* second) {
   if (!available) return;
   startFrame();
   oled.println(F("HYBRID MULTI-SENSOR"));
@@ -31,6 +31,12 @@ void showMessage(const char* first, const char* second) {
   oled.println(second);
   oled.display();
 }
+
+void showReady(bool storageReady) {
+  showMessage("Press Scan to start", storageReady ? "microSD ready" : "microSD unavailable");
+}
+
+void showReading() { showMessage("Reading sensors", "Keep probes in place"); }
 
 static void field(const char* label, float value, const char* unit) {
   oled.print(label);

@@ -1,11 +1,19 @@
 param(
-  [ValidateSet('build', 'configure', 'ports', 'upload', 'monitor')]
+  [ValidateSet('build', 'configure', 'ports', 'upload', 'monitor', 'preview')]
   [string]$Action = 'build',
   [string]$Port
 )
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
+  if ($Action -eq 'preview') {
+    $previewPython = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/python.exe'
+    if (-not (Test-Path -LiteralPath $previewPython)) {
+      $previewPython = (Get-Command python -ErrorAction Stop).Source
+    }
+    & $previewPython 'preview/preview.py'
+    exit $LASTEXITCODE
+  }
   if ($Action -eq 'configure') {
     $destination = Join-Path $PSScriptRoot 'include/secrets.h'
     if (-not (Test-Path -LiteralPath $destination)) {

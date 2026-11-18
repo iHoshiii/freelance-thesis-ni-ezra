@@ -34,7 +34,7 @@ static bool saved = false, details = false;
 static SmsStatus status = SmsStatus::Disabled;
 
 void captureScan(const String& sample, const String& location) {
-  showMessage("Reading sensors", "Keep probes in place");
+  showReading();
   latest.id = createRecordId();
   latest.sample = sample.isEmpty() ? latest.id : sample;
   latest.location = location;
@@ -61,7 +61,7 @@ void setup() {
   scanButton.begin();
   viewButton.begin();
   const bool ready = beginLog();
-  showMessage("Press Scan to start", ready ? "microSD ready" : "microSD unavailable");
+  showReady(ready);
   Serial.println(ready ? "microSD ready." : "microSD unavailable.");
   printHelp();
 }

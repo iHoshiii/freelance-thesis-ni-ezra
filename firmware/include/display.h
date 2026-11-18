@@ -3,5 +3,6 @@
 #include "sms.h"
 
 void beginDisplay();
-void showMessage(const char* first, const char* second);
+void showReady(bool storageReady);
+void showReading();
 void showScan(const ScanRecord& record, bool saved, bool details, SmsStatus sms);
