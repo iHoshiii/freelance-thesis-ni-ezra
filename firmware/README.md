@@ -1,6 +1,6 @@
 # ESP32 firmware
 
-The firmware builds for a classic ESP32-WROOM-32 / ESP-32S development board with exposed GPIOs. USB serial remains available for setup and diagnostics. Scan and View are physical buttons.
+The firmware builds for a classic ESP32-WROOM-32 / ESP-32S development board with exposed GPIOs. Flashing the firmware onto the ESP32 installs the interface in `src/display.cpp`. The ESP32 draws each screen on the SSD1306 over I2C and reads the physical Scan and View buttons. USB serial is available for setup and diagnostics.
 
 ## Windows setup and build
 
@@ -53,4 +53,4 @@ The firmware writes one `/scans/<record-id>.csv` per capture with at least one u
 
 For each confirmed save, a configured and idle modem gets one SMS submission attempt with the short scan ID, time, pH, moisture index and temperature. A busy modem skips the new text while the new scan remains on the card. A timeout after submission reports unconfirmed and pauses future SMS until restart to avoid misattributing late responses. A modem acknowledgement means submitted. Measure handset receipt and latency separately.
 
-Existing boards can use `legacy-export` over serial to read checksum-valid legacy LittleFS JSON records, including recoverable temporary files. The new firmware does not format legacy flash or upload its contents. Keep the original `SOIL_DEVICE_ID` to retain a previously saved pH offset.
+Keep the original `SOIL_DEVICE_ID` to retain a previously saved pH offset.

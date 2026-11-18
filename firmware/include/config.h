@@ -18,5 +18,4 @@ constexpr int sdSck = 18, sdMiso = 19, sdMosi = 23, sdCs = 13;
 constexpr int smsRx = 16, smsTx = 17;
 constexpr uint32_t smsBaud = 115200;
 constexpr int scanButton = 32, viewButton = 33;
-constexpr size_t recordLimit = 4096;
 }

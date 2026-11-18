@@ -6,6 +6,7 @@ Use a fixed firmware revision, documented sensor settings, known reference input
 | --- | --- |
 | Boot | Connect the OLED and FAT32 card. Verify startup, SD readiness and the 115200 baud console. With sensors disabled, check that Scan shows unavailable instead of saving a record. |
 | Buttons and screen | With a verified sensor, press and hold Scan. Confirm one record per deliberate press, then switch pages with View. Check units, missing-value display and readability outdoors. |
+| Offline operation | Leave the modem disconnected and power on with the OLED, verified sensor and FAT32 card connected. Press Scan. Confirm the OLED shows a reading and a successful save, then use View and verify the matching microSD file. |
 | Sensors | Compare the temperature probe, pH in prepared slurry and calibrated moisture against their documented references. Disconnect each probe and inspect availability behavior. For analog sensors, test open inputs and include limitations in the results. |
 | NPK | Enable only with the actual register map. Verify N/P/K order and raw values, then check fault behavior on a missing probe or invalid reply. Proceed to lab comparison only with compatible reference methods. |
 | Record integrity | Verify screen readings against the CSV for the same ID, using the screen's rounding. Restart and confirm saved files can be copied. Run a full-card trial and inspect previous records. |

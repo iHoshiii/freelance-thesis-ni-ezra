@@ -17,4 +17,4 @@ For the enclosure, allow access to the display, pushbuttons, antenna, microSD an
 
 Start with the OLED, buttons, breakout and card. Add the RTC for timestamped collection. Confirm the SIM and modem combination before buying the enclosure or field power hardware. The pH, moisture and temperature hardware from the previous build can be reused. Defer buying an NPK probe until its exact manual and matching laboratory method have been confirmed.
 
-Record supplier, SKU, quantity, actual unit cost in PHP, shipping and availability. Prior budgets reflect the screenless prototype and require new quotes for these parts.
+Record supplier, SKU, quantity, actual unit cost in PHP, shipping and availability. Use the [budget checklist](COMPLETE_MATERIALS_AND_TESTING_BUDGET.md) for the full prototype and testing expenses.

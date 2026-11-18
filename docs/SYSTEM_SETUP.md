@@ -2,7 +2,7 @@
 
 ## Scope
 
-The prototype combines pH from a separate soil-water slurry, temperature and a moisture sensor in one ESP32 instrument. A compatible RS485 probe can add provisional raw N, P and K values pending feasibility and independent validation. A rechargeable battery supplies the reader, with supplemental solar charging. The built-in OLED is the primary interface. A removable microSD card holds the field records. The optional LTE modem sends a short summary to a configured phone.
+The prototype combines pH from a separate soil-water slurry, temperature and a moisture sensor in one ESP32 instrument. A compatible RS485 probe can add provisional raw N, P and K values pending feasibility and independent validation. A rechargeable battery supplies the reader, with supplemental solar charging. The ESP32 firmware draws the user interface on the built-in OLED and saves the field records to a removable microSD card. The optional LTE modem sends a short summary to a configured phone.
 
 ```mermaid
 flowchart LR
@@ -34,5 +34,3 @@ For button captures, write the displayed short scan ID next to the field sample 
 - **Usability and storage.** Observe Scan and View tasks, interpretation of units and missing readings, and record retrieval from the card. Verify restart retention, logging with no cellular service, full-card behavior and interrupted writes.
 - **SMS and power.** Record attempted, modem-submitted and handset-received counts, receipt latency, field carrier/coverage and the effect of network loss. Measure current during sensing, storage and SMS, then measure battery runtime and solar contribution under stated conditions.
 - **Cost.** Track prices actually paid and distinguish borrowed equipment from cash expense. Include storage media, display, modem, SIM, power and test services if purchased.
-
-The active scope treats readings as measurements. Fertilizer compatibility can be reconsidered separately with adviser approval, independently verified nutrient inputs, crop-specific reference labels and a validated embedded model. The earlier screenless figures, web and training notes are historical material. Use the revised manuscript for the current design.

@@ -1,13 +1,11 @@
 #include "console.h"
-#include "config.h"
 #include "local_log.h"
-#include "npk.h"
 #include "ph_correction.h"
 #include "reader_clock.h"
 
 void printHelp() {
   Serial.println("Commands: help, status, read, scan SAMPLE|LOCATION, rtc-set YYYY-MM-DDTHH:MM:SSZ");
-  Serial.println("Maintenance: ph-offset [DEVICE_ID OFFSET], legacy-export");
+  Serial.println("Maintenance: ph-offset [DEVICE_ID OFFSET]");
 }
 
 static void execute(String line) {
@@ -21,8 +19,6 @@ static void execute(String line) {
     handlePhOffsetCommand(line);
   } else if (line.startsWith("rtc-set ")) {
     Serial.println(setClock(line.substring(8)) ? "RTC set to UTC." : "RTC set failed. Check date, UTC format and wiring.");
-  } else if (line == "legacy-export") {
-    exportLegacyScans();
   } else if (line == "read") {
     ScanRecord preview;
     preview.acquiredAt = acquisitionTime();

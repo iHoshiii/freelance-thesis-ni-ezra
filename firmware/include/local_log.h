@@ -3,4 +3,3 @@
 
 bool beginLog();
 bool saveScan(const ScanRecord& record);
-void exportLegacyScans();

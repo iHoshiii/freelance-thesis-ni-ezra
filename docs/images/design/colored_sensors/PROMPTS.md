@@ -21,8 +21,3 @@ Use case: precise-object-edit. Asset type: thesis component illustration. Image 
 ## figure-4o-ph-electrode-color.png
 
 Use case: precise-object-edit. Asset type: thesis component illustration. Image 1 is the edit target, an existing black and white drawing of a liquid pH electrode. Image 2 is a color reference overview only. Add restrained realistic color to Image 1 matching the corresponding component in Image 2: pale blue transparent glass electrode, charcoal gray upper body, black cable, dark gray connector with silver contacts. Preserve precisely the original target's component geometry, perspective, cable path, part count, outlines, position, surrounding white margin and wide aspect ratio. Keep it a crisp technical line illustration on pure white background. Color only existing surfaces. No new objects, text, numbering, labels, shadows on background, gradients outside the object, cropping or changes to circuitry. Return ONLY the colored individual component from Image 1, never the overview.
-
-
-## ../ipo-2023.png
-
-Use case: text-localization. Edit this existing thesis IPO diagram. Change exactly TWO text occurrences from 'ISO/IEC 25010:2024-based' to 'ISO/IEC 25010:2023-based', one in INPUTS and one in OUTPUTS. Only replace the last digit of those two years from 4 to 3. Preserve EVERY other word, spelling, line break, font, black text, three column boxes, arrows, white background, dimensions, margins, and positions precisely. Do not redesign or add anything. Return the full corrected diagram.

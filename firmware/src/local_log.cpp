@@ -1,6 +1,5 @@
 #include "local_log.h"
 #include "config.h"
-#include "flash_store.h"
 #include <SD.h>
 #include <SPI.h>
 
@@ -43,21 +42,4 @@ bool saveScan(const ScanRecord& record) {
   SD.end();
   mounted = false;
   return false;
-}
-
-void exportLegacyScans() {
-  FlashStore flash;
-  if (!flash.begin()) { Serial.println("Legacy flash unavailable."); return; }
-  size_t exported = 0;
-  Serial.println("BEGIN LEGACY JSON LINES");
-  for (const auto& path : flash.files()) {
-    if (path.size() != 41 || !validRecordId(path.substr(1, 36))) continue;
-    if (path.substr(37) != ".rec" && path.substr(37) != ".tmp") continue;
-    std::string stored, payload;
-    if (flash.read(path, stored) && openRecord(stored, payload)) {
-      Serial.println(payload.c_str());
-      ++exported;
-    } else Serial.printf("Legacy file could not be decoded: %s\n", path.c_str());
-  }
-  Serial.printf("END LEGACY JSON LINES (%u readable files)\n", static_cast<unsigned>(exported));
 }
