@@ -1,5 +1,7 @@
 # Soil Analyzer Materials Budget
 
+> Historical material from the previous prototype. See the [standalone design](SYSTEM_SETUP.md) and [current buying list](SHOPEE_PURCHASING_CHECKLIST.md).
+
 Research date: 4 November 2026. Currency: Philippine pesos.
 
 The user clarified that the freelancer's development fee is **₱15,000**, while the user purchases materials and the freelancer reimburses those purchases separately. Keep the development fee and reimbursable materials in separate records.

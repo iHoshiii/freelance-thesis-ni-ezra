@@ -1,5 +1,7 @@
 # Soil Analyzer Hardware and Web Application Cheat Sheet
 
+> Historical material from the previous prototype. See the [standalone design](SYSTEM_SETUP.md) and [current buying list](SHOPEE_PURCHASING_CHECKLIST.md).
+
 This is a study and presentation reference for the **Hybrid Multi-Sensor Soil Analyzer with Fertilizer Compatibility Advisor and Web-Based Monitoring System**. It explains what each part does, why it is needed, and what users should see in the web application.
 
 **Basis:** the complete text of [initial_paper.docx](initial_paper.docx), especially Components of the Device, System Architecture, Firmware and Data Acquisition, Fertilizer Compatibility Advisory, and Web-Based Application Development. Individual draft part names were cross-checked against `FL13_refined.docx` and the component drawings. The file currently named `initial_paper.docx` already includes offline recording and removal of the physical screen.

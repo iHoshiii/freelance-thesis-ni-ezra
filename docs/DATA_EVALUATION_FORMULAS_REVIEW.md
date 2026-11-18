@@ -1,4 +1,6 @@
-﻿# Data evaluation formulas for the soil analyzer thesis
+# Data evaluation formulas for the soil analyzer thesis
+
+> Historical material from the previous prototype. See the [standalone design](SYSTEM_SETUP.md) and [current buying list](SHOPEE_PURCHASING_CHECKLIST.md).
 
 Prepared on 5 November 2026 from a review of `docs/initial_paper.docx` and the primary sources linked below. This Markdown file records the proposed evaluation methods and explains the scope of the formulas incorporated into the current Word draft.
 

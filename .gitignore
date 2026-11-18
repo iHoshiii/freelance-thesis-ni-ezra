@@ -20,3 +20,6 @@ coverage/
 .venv/
 *.tsbuildinfo
 firmware/include/secrets.h
+
+# Local Word lock files
+~$*.docx

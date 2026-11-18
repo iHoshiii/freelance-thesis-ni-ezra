@@ -1,5 +1,7 @@
 # SoilSense web application
 
+> Historical web prototype. The [active soil reader firmware](../../firmware/README.md) operates through its enclosure-mounted screen and microSD.
+
 Next.js, TypeScript, Prisma ORM 7, and Supabase PostgreSQL. The initial release is a shared research workspace with no login. Only devices explicitly listed in `WORKSPACE_DEVICE_IDS` are visible.
 
 ## Run

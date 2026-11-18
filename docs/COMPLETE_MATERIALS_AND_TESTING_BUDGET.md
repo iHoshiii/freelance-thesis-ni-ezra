@@ -1,5 +1,7 @@
 # Complete device, calibration, and testing budget checklist
 
+> Historical material from the previous prototype. See the [standalone design](SYSTEM_SETUP.md) and [current buying list](SHOPEE_PURCHASING_CHECKLIST.md).
+
 Prepared: 5 November 2026. Currency: Philippine pesos. Scope: one screenless ESP32 breadboard prototype, bounded onboard-flash recording, subsequent Wi-Fi upload, and web monitoring/advisory development.
 
 This is a costing checklist, not a finalized wiring plan, supplier quotation, or approved sample-size plan. Exact hardware, power design, calibration methods, and sample counts remain to be selected with the freelancer and adviser. Stock is not reserved.

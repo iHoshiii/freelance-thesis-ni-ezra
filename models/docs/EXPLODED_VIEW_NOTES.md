@@ -1,4 +1,6 @@
-﻿# Labeled exploded view
+# Labeled exploded view
+
+> These assets depict an earlier prototype. See the [current Word manuscript](../../docs/HYBRID_MULTI_SENSOR_SOIL_READER.docx) for the display, storage and modem layout.
 
 Open `blend-files/soil_analyzer_exploded_labeled.blend`.
 

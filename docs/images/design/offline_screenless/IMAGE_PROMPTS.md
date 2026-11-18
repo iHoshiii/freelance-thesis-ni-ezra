@@ -1,5 +1,7 @@
 # Screenless proposal illustration prompts
 
+> Historical screenless artwork. See the [current Word manuscript](../../../HYBRID_MULTI_SENSOR_SOIL_READER.docx) for the standalone reader figures.
+
 Generated with the built-in image-generation tool on 2026-11-04. These are conceptual illustrations, not circuit schematics or edited Blender geometry.
 
 ## enclosure

@@ -1,5 +1,7 @@
 # Offline recording and screenless proposal revision
 
+> Historical material from the previous prototype. See the [standalone design](SYSTEM_SETUP.md) and [current buying list](SHOPEE_PURCHASING_CHECKLIST.md).
+
 Date: 2026-11-04
 
 The entire text of `paper_revised.docx` and `paper_revised_with_design_figures.docx` was reviewed for storage, communication, firmware, monitoring, reliability, and testing. The source described Wi-Fi transmission, server/database history, connection-failure handling, and recovery tests. It did not define persistent device-side logging or later synchronization. Existing model notes explicitly excluded that feature and included a status OLED.

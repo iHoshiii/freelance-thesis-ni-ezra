@@ -1,5 +1,7 @@
 # Proposed soil analyzer
 
+> These assets depict an earlier prototype. See the [current Word manuscript](../../docs/HYBRID_MULTI_SENSOR_SOIL_READER.docx) for the display, storage and modem layout.
+
 The concept follows `docs/paper_revised.docx`, particularly **Components of the Device** and **Hardware Development**.
 
 - `blend-files/soil_analyzer_proposed.blend`: editable 3D model. Open the scene **01 Proposed soil analyzer** for the assembled device or **02 Internal component layout** for its conceptual packaging.
