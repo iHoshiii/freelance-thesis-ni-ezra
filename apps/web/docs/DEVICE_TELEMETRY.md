@@ -29,4 +29,4 @@ Reports use server receipt time. Reports older than 90 seconds are stale; the we
 
 Send heartbeats serially (wait for each response before sending the next). Retry a fresh snapshot after reconnecting. Keep each stored scan until `/api/readings` returns its matching `acknowledgedRecordId`; a heartbeat is not an acknowledgement for a scan.
 
-The current `firmware/src/main.cpp` is a scaffold. Actual sensor acquisition, flash queue, Wi-Fi upload and battery monitoring still need firmware implementation and hardware verification.
+The [firmware starter](../../../firmware/README.md) now implements flash queuing, Wi-Fi upload, matching acknowledgements and these device reports. Optional temperature and calibrated analog pH/moisture inputs are disabled until wiring is confirmed. Battery stays null and NPK has no driver yet. Compilation and portable queue tests do not replace hardware verification.
