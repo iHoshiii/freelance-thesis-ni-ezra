@@ -1,0 +1,156 @@
+[
+  {
+    "number": 1,
+    "name": "Solar panel",
+    "note": "",
+    "column": "L",
+    "row": 0
+  },
+  {
+    "number": 2,
+    "name": "Removable lid and screws",
+    "note": "",
+    "column": "L",
+    "row": 1
+  },
+  {
+    "number": 3,
+    "name": "ESP32 development board",
+    "note": "Wi-Fi data acquisition",
+    "column": "L",
+    "row": 2
+  },
+  {
+    "number": 4,
+    "name": "pH interface board",
+    "note": "",
+    "column": "L",
+    "row": 3
+  },
+  {
+    "number": 5,
+    "name": "MAX3485 RS485 interface",
+    "note": "",
+    "column": "R",
+    "row": 1
+  },
+  {
+    "number": 6,
+    "name": "TP4056 charging module",
+    "note": "Draft part; electrical selection pending",
+    "column": "R",
+    "row": 0
+  },
+  {
+    "number": 7,
+    "name": "5 V boost converter",
+    "note": "",
+    "column": "R",
+    "row": 3
+  },
+  {
+    "number": 8,
+    "name": "12 V boost converter",
+    "note": "",
+    "column": "R",
+    "row": 5
+  },
+  {
+    "number": 9,
+    "name": "Two rechargeable 18650 cells",
+    "note": "Battery wiring not specified",
+    "column": "R",
+    "row": 2
+  },
+  {
+    "number": 10,
+    "name": "Battery holder",
+    "note": "",
+    "column": "R",
+    "row": 6
+  },
+  {
+    "number": 11,
+    "name": "Perfboard mounting base",
+    "note": "",
+    "column": "L",
+    "row": 6
+  },
+  {
+    "number": 12,
+    "name": "0.96 inch OLED display",
+    "note": "Basic device status",
+    "column": "L",
+    "row": 7
+  },
+  {
+    "number": 13,
+    "name": "Power switch",
+    "note": "",
+    "column": "R",
+    "row": 10
+  },
+  {
+    "number": 14,
+    "name": "Capacitive moisture sensor",
+    "note": "",
+    "column": "R",
+    "row": 7
+  },
+  {
+    "number": 15,
+    "name": "DS18B20 temperature probe",
+    "note": "",
+    "column": "R",
+    "row": 9
+  },
+  {
+    "number": 16,
+    "name": "RS485 NPK probe",
+    "note": "Provisional; feasibility check first",
+    "column": "R",
+    "row": 4
+  },
+  {
+    "number": 17,
+    "name": "Liquid pH electrode",
+    "note": "",
+    "column": "L",
+    "row": 4
+  },
+  {
+    "number": 18,
+    "name": "Soil-water sample cup",
+    "note": "Separate pH measurement sample",
+    "column": "L",
+    "row": 8
+  },
+  {
+    "number": 19,
+    "name": "Enclosure base",
+    "note": "",
+    "column": "L",
+    "row": 9
+  },
+  {
+    "number": 20,
+    "name": "Cable entries and seals",
+    "note": "",
+    "column": "L",
+    "row": 10
+  },
+  {
+    "number": 21,
+    "name": "Jumper wires and resistor",
+    "note": "Wiring components; not a circuit diagram",
+    "column": "L",
+    "row": 5
+  },
+  {
+    "number": 22,
+    "name": "Push button",
+    "note": "Draft local control",
+    "column": "R",
+    "row": 8
+  }
+]
