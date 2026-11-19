@@ -29,7 +29,7 @@ The desktop preview uses simulated sensor and module results. It runs locally an
 
 ## Proposed pin map
 
-Use the [illustrated bench wiring diagram](../docs/images/design/esp32-bench-wiring.png) with a classic ESP32-WROOM-32 DevKit. With power off, match the **GPIO numbers** to the labels on the actual board. For each four-leg tactile button, use contacts that are open when released.
+Use the [step-by-step wiring guide](../docs/WIRING_GUIDE.md) with a classic ESP32-WROOM-32 DevKit. It gives the [breadboard layout](../docs/images/design/esp32-bench-wiring.png), the [direct wiring layout](../docs/images/design/esp32-direct-wiring.png), and the power connections. With power off, match the **GPIO numbers** to the labels on the actual board.
 
 | Module | ESP32 connections | Bench notes |
 | --- | --- | --- |
@@ -39,15 +39,13 @@ Use the [illustrated bench wiring diagram](../docs/images/design/esp32-bench-wir
 | Scan / View buttons | Scan 32, View 33 | Momentary buttons connect to GND. Internal pull-ups are used. |
 | LTE modem UART2 | ESP32 RX 16 ← modem TXD. ESP32 TX 17 → modem RXD. | Use a documented 3.3 V logic carrier. Power modem from a separate regulated supply suitable for bursts, with common ground. |
 | DS18B20 | Data 4 | Three-wire mode. Use a 4.7 kΩ pull-up from data to 3.3 V. |
-| pH analog interface | ADC1 34 | Check maximum analog voltage before connecting. Follow the interface and probe manuals. |
-| Capacitive moisture analog | ADC1 35 | Check analog voltage. Dry/wet calibration currently produces a reference index. |
+| DFRobot SEN0161 pH interface | ADC1 34 | Power the board at 5 V. Use the pH divider in the wiring guide and measure its output before connecting the ESP32. |
+| DFRobot SEN0308 moisture sensor | ADC1 35 | Power the sensor at 3.3 V. Use the moisture divider in the wiring guide. Dry/wet calibration produces a reference index. |
 | Provisional RS485 NPK | UART1 RX 26, TX 27, direction 25 | 3.3 V MAX3485-class transceiver. Connect RO to RX, DI to TX and DE plus active-low RE to direction. Verify A/B, termination, bias and probe supply against the selected module. |
 
 The OLED and RTC share SDA and SCL. Verify that the I2C pull-ups go to 3.3 V and check the breakouts for installed pull-ups before adding any. For the referenced SPI microSD breakout, `SO` connects to MISO and `SI` to MOSI. [Adafruit DS3231 breakout](https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout/pinouts), [Adafruit microSD pinout](https://learn.adafruit.com/adafruit-microsd-spi-sdio/pinouts)
 
-For the Waveshare SIM7600G-H 4G Module shown, use a dedicated regulated 5 V supply on the module's USB-C port. Connect the module GND to the ESP32 GND and leave VIO open for the carrier's default 3.3 V UART logic. Follow the module's startup procedure and connect the LTE antenna before use. [Waveshare module documentation](https://www.waveshare.com/wiki/SIM7600G-H_4G_Module)
-
-The bench sample uses a 10 kΩ series resistor, a 20 kΩ resistor to ground and a 100 nF capacitor to ground for each DFRobot analog input. A 3.0 V sensor output gives about 2.0 V at the ADC. Measure the voltage at GPIO34 or GPIO35 and calibrate with the circuit in place. [DFRobot pH kit](https://wiki.dfrobot.com/sen0161-v2/), [DFRobot moisture sensor](https://wiki.dfrobot.com/sen0193), [Espressif ADC guidance](https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32/schematic-checklist.html#adc)
+Measure the pH and moisture voltages at their respective ADC junctions. Set the calibration points with the same resistors installed. Check the [optional modem and NPK power connections](../docs/WIRING_GUIDE.md#4-add-the-optional-modules-after-the-reader-can-save-a-scan) before adding those modules.
 
 ## Configure and operate
 

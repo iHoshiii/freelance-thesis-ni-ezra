@@ -6,6 +6,7 @@ An ESP32-based field instrument for measuring soil pH, moisture and temperature,
 
 - [Revised Word manuscript](docs/HYBRID_MULTI_SENSOR_SOIL_READER.docx)
 - [Study scope and test plan](docs/SYSTEM_SETUP.md)
+- [Wiring with and without a breadboard](docs/WIRING_GUIDE.md)
 - [Hardware buying list](docs/SHOPEE_PURCHASING_CHECKLIST.md)
 - [Materials and testing budget](docs/COMPLETE_MATERIALS_AND_TESTING_BUDGET.md)
 - [Evaluation formulas](docs/DATA_EVALUATION_FORMULAS_REVIEW.md)

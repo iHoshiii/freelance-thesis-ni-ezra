@@ -1,6 +1,6 @@
 # pH offset configuration
 
-The device stores a per-device pH offset in ESP32 non-volatile settings. Start with the initial two-point voltage calibration for the physical pH interface. Use the actual probe manual and verified buffer solutions. [DFRobot SEN0161-V2 instructions](https://wiki.dfrobot.com/sen0161-v2/)
+The device stores a per-device pH offset in ESP32 non-volatile settings. Start with the two-point voltage calibration for the physical pH interface. Measure at the GPIO34 junction with the divider in place. Use the actual probe manual and verified buffer solutions. [DFRobot SEN0161 instructions](https://wiki.dfrobot.com/sen0161) · [Wiring guide](WIRING_GUIDE.md#put-these-dividers-between-the-sensors-and-the-esp32)
 
 ## Serial workflow
 
