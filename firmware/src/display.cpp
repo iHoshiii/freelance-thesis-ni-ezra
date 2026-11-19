@@ -21,7 +21,7 @@ static void startFrame() {
   oled.setCursor(0, 0);
 }
 
-static void showMessage(const char* first, const char* second) {
+static void showMessage(const char* first, const char* second, bool menuHint = false) {
   if (!available) return;
   startFrame();
   oled.println(F("HYBRID MULTI-SENSOR"));
@@ -29,11 +29,15 @@ static void showMessage(const char* first, const char* second) {
   oled.println();
   oled.println(first);
   oled.println(second);
+  if (menuHint) {
+    oled.setCursor(0, 56);
+    oled.println(F("Hold View: menu"));
+  }
   oled.display();
 }
 
 void showReady(bool storageReady) {
-  showMessage("Press Scan to start", storageReady ? "microSD ready" : "microSD unavailable");
+  showMessage("Press Scan to start", storageReady ? "microSD ready" : "microSD unavailable", true);
 }
 
 void showReading() { showMessage("Reading sensors", "Keep probes in place"); }
@@ -70,5 +74,90 @@ void showScan(const ScanRecord& record, bool saved, bool details, SmsStatus sms)
   oled.println(saved ? F("Saved on microSD") : hasMeasurement(r) ? F("SD save failed") : F("No usable readings"));
   if (saved) oled.println(smsLabel(sms));
   oled.println(details ? F("View: measurements") : F("View: raw NPK"));
+  oled.display();
+}
+
+void showMenu(MenuItem selected) {
+  if (!available) return;
+  startFrame();
+  oled.println(F("SOIL READER MENU"));
+  oled.println();
+  const char* const items[] = {"Past Scans", "Wi-Fi", "Bluetooth"};
+  for (unsigned i = 0; i < static_cast<unsigned>(MenuItem::Count); ++i) {
+    oled.print(i == static_cast<unsigned>(selected) ? "> " : "  ");
+    oled.println(items[i]);
+  }
+  oled.setCursor(0, 48);
+  oled.println(F("View: next Scan: open"));
+  oled.println(F("Hold View: back"));
+  oled.display();
+}
+
+void showPastScan(const ScanRecord* record, bool cardReady, bool details) {
+  if (!available) return;
+  startFrame();
+  oled.print(F("Past Scans"));
+  if (record) {
+    oled.print(F(" "));
+    oled.println(record->id.substring(0, 8));
+    oled.println(record->acquiredAt.isEmpty() ? "Time unknown" : record->acquiredAt);
+    const auto& reading = record->reading;
+    if (details) {
+      raw("N raw: ", reading.nitrogenRaw);
+      raw("P raw: ", reading.phosphorusRaw);
+      raw("K raw: ", reading.potassiumRaw);
+    } else {
+      field("pH: ", reading.ph, "");
+      field("Moist. index: ", reading.moisture, "%");
+      field("Temp: ", reading.temperature, " C");
+    }
+    oled.setCursor(0, 40);
+    oled.println(details ? F("Scan: measurements") : F("Scan: raw NPK"));
+    oled.println(F("View: next scan"));
+  } else {
+    oled.println();
+    oled.println(cardReady ? F("No saved scans") : F("microSD unavailable"));
+  }
+  oled.setCursor(0, 56);
+  oled.println(F("Hold View: back"));
+  oled.display();
+}
+
+void showWifi(WifiPage page, const String& network, unsigned position, unsigned count) {
+  if (!available) return;
+  startFrame();
+  oled.println(F("Wi-Fi"));
+  oled.println(F("2.4 GHz only"));
+  oled.println();
+  switch (page) {
+    case WifiPage::Ready: oled.println(F("Press Scan to search")); break;
+    case WifiPage::Searching: oled.println(F("Searching...")); break;
+    case WifiPage::Empty: oled.println(F("No networks found")); break;
+    case WifiPage::Failed: oled.println(F("Wi-Fi scan failed")); break;
+    case WifiPage::Results:
+      oled.println(network.substring(0, 21));
+      oled.print(position);
+      oled.print(F(" / "));
+      oled.println(count);
+      oled.println(F("View: next network"));
+      break;
+  }
+  if (page != WifiPage::Ready && page != WifiPage::Searching) {
+    oled.setCursor(0, 48);
+    oled.println(F("Scan: search again"));
+  }
+  oled.setCursor(0, 56);
+  oled.println(F("Hold View: back"));
+  oled.display();
+}
+
+void showBluetooth() {
+  if (!available) return;
+  startFrame();
+  oled.println(F("Bluetooth"));
+  oled.println();
+  oled.println(F("Pairing not set up"));
+  oled.setCursor(0, 56);
+  oled.println(F("Hold View: back"));
   oled.display();
 }

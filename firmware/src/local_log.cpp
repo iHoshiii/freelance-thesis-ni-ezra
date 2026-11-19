@@ -4,6 +4,8 @@
 #include <SPI.h>
 
 static bool mounted = false;
+static File history;
+static bool historyHadScan = false;
 
 bool beginLog() {
   if (mounted) return true;
@@ -42,4 +44,94 @@ bool saveScan(const ScanRecord& record) {
   SD.end();
   mounted = false;
   return false;
+}
+
+bool openScanHistory() {
+  closeScanHistory();
+  if (beginLog()) history = SD.open("/scans", FILE_READ);
+  return history && history.isDirectory();
+}
+
+void closeScanHistory() {
+  history.close();
+  historyHadScan = false;
+}
+
+static bool nextCell(const String& row, size_t& cursor, String& cell) {
+  cell = "";
+  if (cursor >= row.length()) return false;
+  if (row[cursor] == '"') {
+    ++cursor;
+    while (cursor < row.length()) {
+      const char current = row[cursor++];
+      if (current == '"') {
+        if (row[cursor] != '"') break;
+        ++cursor;
+      }
+      cell += current;
+    }
+  } else {
+    while (cursor < row.length() && row[cursor] != ',') cell += row[cursor++];
+  }
+  return row[cursor++] == ',';
+}
+
+static float savedFloat(const String& text) {
+  char* end = nullptr;
+  const float value = strtof(text.c_str(), &end);
+  return end != text.c_str() && *end == 0 ? value : NAN;
+}
+
+static int32_t savedRaw(const String& text) {
+  char* end = nullptr;
+  const long value = strtol(text.c_str(), &end, 10);
+  return end != text.c_str() && *end == 0 && value >= 0 && value <= UINT16_MAX ? value : -1;
+}
+
+static bool readSavedScan(File& file, ScanRecord& record) {
+  if (file.isDirectory() || file.size() > 1024) return false;
+  const String name = file.name();
+  if (!name.endsWith(".csv")) return false;
+  file.setTimeout(0);
+  file.readStringUntil('\n');
+  const String row = file.readStringUntil('\n');
+  String cells[14];
+  size_t cursor = 0;
+  for (auto& cell : cells) {
+    if (!nextCell(row, cursor, cell)) return false;
+  }
+  if (cells[1].length() != 36 || !name.endsWith(cells[1] + ".csv")) return false;
+
+  record.id = cells[1];
+  record.sample = cells[2];
+  record.location = cells[3];
+  record.acquiredAt = cells[4];
+  record.reading.ph = savedFloat(cells[6]);
+  record.reading.phBeforeOffset = savedFloat(cells[7]);
+  record.reading.phAppliedOffset = savedFloat(cells[8]);
+  record.reading.moisture = savedFloat(cells[9]);
+  record.reading.temperature = savedFloat(cells[10]);
+  record.reading.nitrogenRaw = savedRaw(cells[11]);
+  record.reading.phosphorusRaw = savedRaw(cells[12]);
+  record.reading.potassiumRaw = savedRaw(cells[13]);
+  return true;
+}
+
+static bool readNextScan(ScanRecord& record) {
+  for (File file = history.openNextFile(); file; file = history.openNextFile()) {
+    if (readSavedScan(file, record)) return true;
+  }
+  return false;
+}
+
+bool nextSavedScan(ScanRecord& record) {
+  if (!history) return false;
+  if (readNextScan(record)) {
+    historyHadScan = true;
+    return true;
+  }
+  if (!historyHadScan) return false;
+  history.rewindDirectory();
+  historyHadScan = readNextScan(record);
+  return historyHadScan;
 }
