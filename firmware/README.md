@@ -23,9 +23,9 @@ From the repository root, open the desktop preview:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\firmware\firmware.ps1 preview
 ```
 
-Press **Scan** to see a sample measurement, **View** to switch to the NPK screen, and **Reset** to see the startup screen. The drop-down shows SD, sensor, clock, and SMS scenarios. Choose **Open display.cpp** to edit the screen text or layout, then save. The preview rebuilds from the same screen source and uses the same Adafruit font and drawing code as the firmware.
+Press **Scan** to see a sample measurement and **View** to switch between measurements and the NPK screen. Reopen the preview to see the startup screen. To change the screen text or layout, save your edits in `src/display.cpp`. The preview rebuilds from that file using the same Adafruit font and drawing code as the firmware.
 
-The desktop preview uses simulated sensor and module results. It runs locally and requires no ESP32 or OLED. It uses Python with Tkinter and a native C++ compiler such as Zig. Run the firmware build once to install the local PlatformIO libraries used by the preview.
+The desktop preview uses simulated sensor and module results. It runs locally and requires no ESP32 or OLED. The launcher looks for Python with Tkinter. If you need a C++ compiler, install the `ziglang` package in the same Python installation as Tkinter. Run the firmware build once to install the local PlatformIO libraries used by the preview.
 
 ## Proposed pin map
 
