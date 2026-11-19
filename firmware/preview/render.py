@@ -8,7 +8,7 @@ from tempfile import TemporaryDirectory
 
 PREVIEW = Path(__file__).resolve().parent
 FIRMWARE = PREVIEW.parent
-SOURCE = FIRMWARE / "src" / "display.cpp"
+DISPLAY_SOURCES = [FIRMWARE / "src" / name for name in ("display.cpp", "display_wifi.cpp")]
 WIDTH, HEIGHT = 128, 64
 STRIDE = WIDTH // 8
 CORE_HOME = Path(os.environ.get("PLATFORMIO_CORE_DIR", Path.home() / ".platformio"))
@@ -21,7 +21,7 @@ class PreviewError(Exception):
 
 
 def source_snapshot():
-    files = [SOURCE, *sorted((FIRMWARE / "include").glob("*.h")), *sorted(PREVIEW.glob("*.cpp")),
+    files = [*DISPLAY_SOURCES, *sorted((FIRMWARE / "include").glob("*.h")), *sorted(PREVIEW.glob("*.cpp")),
              *sorted((PREVIEW / "host").glob("*.h"))]
     return tuple((path, path.stat().st_mtime_ns) for path in files)
 
@@ -69,7 +69,7 @@ class Renderer:
         for path in core_files:
             shutil.copyfile(path, self.directory / path.name)
         headers = [self.directory, PREVIEW / "host", FIRMWARE / "include", GFX]
-        sources = [PREVIEW / "preview_display.cpp", SOURCE, gfx, self.directory / "Print.cpp"]
+        sources = [PREVIEW / "preview_display.cpp", *DISPLAY_SOURCES, gfx, self.directory / "Print.cpp"]
         command = compiler_command() + ["-std=c++11", "-O2", "-DARDUINO=10819", "-DSOIL_DESKTOP_PREVIEW"]
         for directory in headers:
             command += ["-I", str(directory)]

@@ -1,9 +1,11 @@
 #include "display.h"
 #include "config.h"
-#include <Adafruit_SSD1306.h>
+#include "display_internal.h"
 
-static Adafruit_SSD1306 oled(128, 64, &Wire, -1);
+Adafruit_SSD1306 Display::oled(128, 64, &Wire, -1);
 static bool available = false;
+using Display::oled;
+using Display::startFrame;
 
 void beginDisplay() {
   Wire.beginTransmission(Config::oledAddress);
@@ -13,17 +15,18 @@ void beginDisplay() {
   if (!available) Serial.println("OLED unavailable. Check its address and wiring.");
 }
 
-static void startFrame() {
+bool Display::startFrame() {
+  if (!available) return false;
   oled.clearDisplay();
   oled.setTextColor(SSD1306_WHITE);
   oled.setTextSize(1);
   oled.setTextWrap(false);
   oled.setCursor(0, 0);
+  return true;
 }
 
 static void showMessage(const char* first, const char* second, bool menuHint = false) {
-  if (!available) return;
-  startFrame();
+  if (!startFrame()) return;
   oled.println(F("HYBRID MULTI-SENSOR"));
   oled.println(F("SOIL READER"));
   oled.println();
@@ -55,8 +58,7 @@ static void raw(const char* label, int32_t value) {
 }
 
 void showScan(const ScanRecord& record, bool saved, bool details, SmsStatus sms) {
-  if (!available) return;
-  startFrame();
+  if (!startFrame()) return;
   oled.print(F("Scan "));
   oled.println(record.id.substring(0, 8));
   const auto& r = record.reading;
@@ -78,8 +80,7 @@ void showScan(const ScanRecord& record, bool saved, bool details, SmsStatus sms)
 }
 
 void showMenu(MenuItem selected) {
-  if (!available) return;
-  startFrame();
+  if (!startFrame()) return;
   oled.println(F("SOIL READER MENU"));
   oled.println();
   const char* const items[] = {"Past Scans", "Wi-Fi", "Bluetooth"};
@@ -94,8 +95,7 @@ void showMenu(MenuItem selected) {
 }
 
 void showPastScan(const ScanRecord* record, bool cardReady, bool details) {
-  if (!available) return;
-  startFrame();
+  if (!startFrame()) return;
   oled.print(F("Past Scans"));
   if (record) {
     oled.print(F(" "));
@@ -123,37 +123,8 @@ void showPastScan(const ScanRecord* record, bool cardReady, bool details) {
   oled.display();
 }
 
-void showWifi(WifiPage page, const String& network, unsigned position, unsigned count) {
-  if (!available) return;
-  startFrame();
-  oled.println(F("Wi-Fi"));
-  oled.println(F("2.4 GHz only"));
-  oled.println();
-  switch (page) {
-    case WifiPage::Ready: oled.println(F("Press Scan to search")); break;
-    case WifiPage::Searching: oled.println(F("Searching...")); break;
-    case WifiPage::Empty: oled.println(F("No networks found")); break;
-    case WifiPage::Failed: oled.println(F("Wi-Fi scan failed")); break;
-    case WifiPage::Results:
-      oled.println(network.substring(0, 21));
-      oled.print(position);
-      oled.print(F(" / "));
-      oled.println(count);
-      oled.println(F("View: next network"));
-      break;
-  }
-  if (page != WifiPage::Ready && page != WifiPage::Searching) {
-    oled.setCursor(0, 48);
-    oled.println(F("Scan: search again"));
-  }
-  oled.setCursor(0, 56);
-  oled.println(F("Hold View: back"));
-  oled.display();
-}
-
 void showBluetooth() {
-  if (!available) return;
-  startFrame();
+  if (!startFrame()) return;
   oled.println(F("Bluetooth"));
   oled.println();
   oled.println(F("Pairing not set up"));

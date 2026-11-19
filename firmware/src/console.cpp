@@ -2,14 +2,17 @@
 #include "local_log.h"
 #include "ph_correction.h"
 #include "reader_clock.h"
+#include "reader_wifi.h"
 
 void printHelp() {
   Serial.println("Commands: help, status, read, scan SAMPLE|LOCATION, rtc-set YYYY-MM-DDTHH:MM:SSZ");
   Serial.println("Maintenance: ph-offset [DEVICE_ID OFFSET]");
+  Serial.println("Wi-Fi: wifi-status. Run firmware/wifi.ps1 on your PC to connect.");
 }
 
 static void execute(String line) {
   line.trim();
+  if (handleReaderWifiCommand(line)) return;
   if (line == "help") printHelp();
   else if (line == "status") {
     printPhOffset();

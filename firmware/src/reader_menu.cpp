@@ -9,6 +9,7 @@ static MenuItem selected = MenuItem::PastScans;
 static bool cardReady = false, hasPastScan = false, pastDetails = false;
 static ScanRecord pastScan;
 static WifiPage wifiPage = WifiPage::Ready;
+static WifiLink displayedLink = WifiLink::Offline;
 static unsigned networkIndex = 0, networkCount = 0;
 
 bool readerMenuOpen() { return active; }
@@ -25,7 +26,7 @@ static void leavePage() {
   if (selected == MenuItem::Wifi && wifiPage != WifiPage::Ready) {
     if (wifiPage == WifiPage::Searching) esp_wifi_scan_stop();
     WiFi.scanDelete();
-    WiFi.mode(WIFI_OFF);
+    if (!readerWifiKeepsRadioOn()) WiFi.mode(WIFI_OFF);
   }
   inPage = false;
 }
@@ -53,27 +54,33 @@ static void nextPastScan() {
 }
 
 static void drawWifi() {
-  String network;
-  if (wifiPage == WifiPage::Results) {
-    network = WiFi.SSID(networkIndex);
-    for (unsigned i = 0; i < network.length(); ++i) {
-      if (network[i] < 32 || network[i] > 126) network.setCharAt(i, '?');
-    }
+  String network = wifiPage == WifiPage::Results ? WiFi.SSID(networkIndex) : readerWifiNetwork();
+  for (unsigned i = 0; i < network.length(); ++i) {
+    if (network[i] < 32 || network[i] > 126) network.setCharAt(i, '?');
   }
-  showWifi(wifiPage, network, networkIndex + 1, networkCount);
+  displayedLink = readerWifiLink();
+  showWifi(wifiPage, network, networkIndex + 1, networkCount, displayedLink);
 }
 
 static void startWifiScan() {
-  if (wifiPage == WifiPage::Searching) return;
+  if (wifiPage == WifiPage::Searching || readerWifiLink() == WifiLink::Connecting) return;
   networkIndex = networkCount = 0;
-  WiFi.persistent(false);
   const bool started = WiFi.mode(WIFI_STA) && WiFi.scanNetworks(true, false, true) == WIFI_SCAN_RUNNING;
   wifiPage = started ? WifiPage::Searching : WifiPage::Failed;
   drawWifi();
 }
 
 void pollReaderMenu() {
-  if (!inPage || selected != MenuItem::Wifi || wifiPage != WifiPage::Searching) return;
+  if (!inPage || selected != MenuItem::Wifi) return;
+  if (wifiPage != WifiPage::Searching) {
+    const WifiLink currentLink = readerWifiLink();
+    if (displayedLink != currentLink && (wifiPage == WifiPage::Ready || currentLink == WifiLink::Connecting)) {
+      if (wifiPage != WifiPage::Ready) WiFi.scanDelete();
+      wifiPage = WifiPage::Ready;
+      drawWifi();
+    }
+    return;
+  }
   const int16_t count = WiFi.scanComplete();
   if (count == WIFI_SCAN_RUNNING) return;
   networkCount = count > 0 ? min(static_cast<unsigned>(count), 256u) : 0;
@@ -104,7 +111,7 @@ void readerMenuScan() {
         break;
       case MenuItem::Wifi:
         wifiPage = WifiPage::Ready;
-        showWifi(wifiPage);
+        drawWifi();
         break;
       case MenuItem::Bluetooth:
         showBluetooth();

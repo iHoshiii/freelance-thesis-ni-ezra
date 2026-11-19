@@ -7,6 +7,7 @@
 #include "ph_correction.h"
 #include "reader_clock.h"
 #include "reader_menu.h"
+#include "reader_wifi.h"
 #include "sms.h"
 
 class Button {
@@ -79,6 +80,7 @@ void setup() {
   viewButton.begin();
   const bool ready = beginLog();
   showReady(ready);
+  beginReaderWifi();
   Serial.println(ready ? "microSD ready." : "microSD unavailable.");
   printHelp();
 }
@@ -86,6 +88,7 @@ void setup() {
 void loop() {
   using Action = Button::Action;
   pollSms();
+  pollReaderWifi();
   const auto updated = smsStatus(latest.id, status);
   const bool smsChanged = updated != status;
   status = updated;
