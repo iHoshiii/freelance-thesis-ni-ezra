@@ -7,12 +7,22 @@ $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
   if ($Action -eq 'preview') {
-    $previewPython = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/python.exe'
-    if (-not (Test-Path -LiteralPath $previewPython)) {
-      $previewPython = (Get-Command python -ErrorAction Stop).Source
+    $previewCandidates = @(
+      $platformPython = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/python.exe'
+      if (Test-Path -LiteralPath $platformPython) { $platformPython }
+      Get-Command python, python3, py -CommandType Application -All -ErrorAction SilentlyContinue |
+        Where-Object { $_.Source -notmatch '\\Microsoft\\WindowsApps\\' } |
+        ForEach-Object { $_.Source }
+    )
+    foreach ($previewPython in ($previewCandidates | Select-Object -Unique)) {
+      try {
+        & $previewPython -c 'import tkinter; tkinter.Tcl()' 2>$null
+        if ($LASTEXITCODE -ne 0) { continue }
+      } catch { continue }
+      & $previewPython 'preview/preview.py'
+      exit $LASTEXITCODE
     }
-    & $previewPython 'preview/preview.py'
-    exit $LASTEXITCODE
+    throw 'The desktop preview needs Python with Tcl/Tk (Tkinter). Install or repair a Python installation with Tcl/Tk enabled, then try again.'
   }
   if ($Action -eq 'configure') {
     $destination = Join-Path $PSScriptRoot 'include/secrets.h'
