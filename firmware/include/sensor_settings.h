@@ -7,7 +7,7 @@ constexpr bool temperatureEnabled = false;
 constexpr int temperaturePin = 4;
 constexpr bool phEnabled = false;
 constexpr int phPin = 34;
-constexpr bool moistureEnabled = false;
+constexpr bool moistureEnabled = true;
 constexpr int moisturePin = 35;
 constexpr bool npkEnabled = false;
 constexpr int npkRx = 26, npkTx = 27, npkDirection = 25;
