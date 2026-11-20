@@ -2,6 +2,7 @@
 #include "sensor_settings.h"
 #include "ph_correction.h"
 #include "ph_offset_math.h"
+#include "npk.h"
 #include <DallasTemperature.h>
 #include <OneWire.h>
 
@@ -29,6 +30,7 @@ static float millivolts(int pin) {
 }
 
 void beginSensors() {
+  beginNpk();
   if (S::temperatureEnabled) {
     bus.begin(S::temperaturePin);
     temperature.begin();
@@ -77,10 +79,10 @@ SensorReading readSensors() {
       else moistureStatus = "error";
     }
   }
+  readNpk(reading);
   return reading;
 }
 
-bool sensorConfigured() { return S::temperatureEnabled || S::phEnabled || S::moistureEnabled; }
 const char* phState() { return phStatus; }
 const char* moistureState() { return moistureStatus; }
 const char* temperatureState() { return temperatureStatus; }

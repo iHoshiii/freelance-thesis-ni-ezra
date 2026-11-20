@@ -1,5 +1,7 @@
 # Exposed breadboard versions
 
+> These assets depict an earlier prototype. See the [current Word manuscript](../../docs/HYBRID_MULTI_SENSOR_SOIL_READER.docx) for the display, storage and modem layout.
+
 Two new models follow the request for a compact version and a scattered-parts version. Both remove the enclosure and lid and replace the perfboard with a generic solderless breadboard. The earlier files are retained.
 
 - `blend-files/soil_analyzer_breadboard_compact.blend` shows an exposed assembly. The ESP32, RS485 interface, jumper/resistor bundle and push button are placed around the breadboard; the other modules and battery holder sit adjacent. The solar panel is beside the exposed assembly. Matching numbers identify the 19 component groups in the legend.

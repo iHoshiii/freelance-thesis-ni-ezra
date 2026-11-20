@@ -1,21 +1,19 @@
-# Arrival and integration checks
+# Prototype verification
 
-Record firmware commit, board marking, flash size, configured queue limit and date alongside the results. Use a dedicated development device ID for integration checks. Serial commands are documented in [README.md](README.md).
+Use a fixed firmware revision, documented sensor settings, known reference inputs and a dedicated card for fault tests. Record scan IDs, expected results, actual results and test conditions.
 
-| Check | Procedure | Expected result |
-| --- | --- | --- |
-| USB boot | Upload with sensors disabled, open Serial, send `status` | Correct chip/flash, no fabricated readings, readiness false. |
-| Server reporting | Configure reachable Wi-Fi/server/token | Website Status receives heartbeats about every 30 seconds. Sensor values and battery stay unavailable until implemented. |
-| Actual sensor | Enable one verified sensor, send `read`, compare with reference | Real measurements, absent inputs remain unavailable. Calibration quality is recorded separately. |
-| Offline capture | Disconnect router/internet as appropriate, send `scan test-001\|Bench` | Serial confirms Saved. The website cannot see the offline scan yet. |
-| Restart retention | With a saved offline scan, reset or unplug/reconnect USB | Pending scan count and payload survive restart. |
-| Reconnect | Restore Wi-Fi/server | Original scan ID is acknowledged, pending count falls, exactly one matching database row exists. |
-| Wrong token | Build with a deliberately invalid development token, record a real test scan | HTTP 401, saved scan retained, retries paused. Restore correct token, upload firmware without formatting, send `sync`. |
-| Lost acknowledgement | Interrupt communication around upload and retry | No deletion without a matching acknowledgement. The server retains one row for the same device/record ID. |
-| Full queue | Temporarily set `Config::queueLimit` to 2, capture three real offline test scans | Third scan refused, first two preserved and uploaded after reconnect. Restore the normal limit. |
-| Interrupted write | On disposable test data, interrupt power repeatedly during save | Fully saved scans survive. Incomplete/corrupt files are retained and stop acquisition for inspection. Never claim zero data loss from host tests alone. |
-| Unknown clock | Power up with no NTP access and capture a real scan | `timeQuality=unknown`, `acquiredAt=null`. Upload later preserves those fields. |
-| Sensor unplug | Disconnect a verified temperature sensor, send `read` | Temperature unavailable, sensor error reported, previous queued records preserved. |
-| pH offset | On verified reference data, send `ph-offset DEVICE_ID 1`, then `read` and restart | Future pH increases by 1 when within range, offset survives restart, old queue entries stay unchanged. A different device ID is refused. Reset offset to 0 after this disposable check. |
+| Test | Procedure and evidence |
+| --- | --- |
+| Boot | Connect the OLED and FAT32 card. Verify startup, SD readiness and the 115200 baud console. With sensors disabled, check that Scan shows unavailable instead of saving a record. |
+| Buttons and screen | With a verified sensor, press and hold Scan. Confirm one record per deliberate press, then switch pages with View. Check units, missing-value display and readability outdoors. |
+| Offline operation | Leave the modem disconnected and power on with the OLED, verified sensor and FAT32 card connected. Press Scan. Confirm the OLED shows a reading and a successful save, then use View and verify the matching microSD file. |
+| Sensors | Compare the temperature probe, pH in prepared slurry and calibrated moisture against their documented references. Disconnect each probe and inspect availability behavior. For analog sensors, test open inputs and include limitations in the results. |
+| NPK | Enable only with the actual register map. Verify N/P/K order and raw values, then check fault behavior on a missing probe or invalid reply. Proceed to lab comparison only with compatible reference methods. |
+| Record integrity | Verify screen readings against the CSV for the same ID, using the screen's rounding. Restart and confirm saved files can be copied. Run a full-card trial and inspect previous records. |
+| Interrupted write | On disposable data, interrupt power before and during a save. Count confirmed files, unreadable files and temporary files separately. Compare preserved records byte for byte where feasible. |
+| Clock | Set RTC to UTC, power-cycle, and compare against a known clock. Remove power from the backup clock on a disposable test setup, then check for `unknown` quality and a blank time. |
+| SMS | Verify the SIM is active and can send at the intended sites. Test modem disabled, a successful submission and actual handset receipt, poor/no coverage, busy modem and a new scan during an ongoing SMS attempt. Log submission and receipt latency separately. Verify that scans remain on microSD in every SMS outcome. |
+| Power | Record bench supply voltage and current during sampling, SD write and LTE transmit. Check for voltage drops, resets and sensor noise. Measure battery runtime and the contribution of the solar charging system under documented conditions. |
+| pH offset | Verify a known offset in range, reboot, and recheck. Confirm the prior CSV is unchanged. Restore the study's approved offset after the test. |
 
-Before field collection, verify the actual storage capacity, sensor calibration, power circuit, scan procedure and acceptable error limits with the study's reference methods. The initial firmware captures manually through USB Serial. A field capture button and its pin can be added once the physical assembly is confirmed.
+The compiled binary is a starting point. Record actual hardware test results before making performance claims.

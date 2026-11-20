@@ -1,25 +1,35 @@
 param(
-  [ValidateSet('build', 'configure', 'ports', 'upload', 'monitor')]
+  [ValidateSet('build', 'configure', 'ports', 'upload', 'monitor', 'preview')]
   [string]$Action = 'build',
   [string]$Port
 )
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
+  if ($Action -eq 'preview') {
+    $previewPython = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/python.exe'
+    if (-not (Test-Path -LiteralPath $previewPython)) {
+      $previewPython = (Get-Command python -ErrorAction Stop).Source
+    }
+    & $previewPython 'preview/preview.py'
+    exit $LASTEXITCODE
+  }
   if ($Action -eq 'configure') {
     $destination = Join-Path $PSScriptRoot 'include/secrets.h'
     if (-not (Test-Path -LiteralPath $destination)) {
       Copy-Item -LiteralPath 'include/secrets.example.h' -Destination $destination
     }
-    Write-Host "Edit $destination with your Wi-Fi, server address, device ID and device token."
-    Write-Host 'Existing configuration is preserved. See README.md for local HTTP and HTTPS setup.'
+    if (-not (Select-String -LiteralPath $destination -Pattern '^\s*#define\s+SOIL_SMS_RECIPIENT\b' -Quiet)) {
+      Add-Content -LiteralPath $destination -Value '#define SOIL_SMS_RECIPIENT ""'
+    }
+    Write-Host "Set SOIL_SMS_RECIPIENT in $destination to enable SMS. Keep your existing device ID."
     exit 0
   }
   $pioCommand = Get-Command pio -ErrorAction SilentlyContinue
   if ($pioCommand) { $pioPath = $pioCommand.Source }
   else { $pioPath = Join-Path $env:USERPROFILE '.platformio/penv/Scripts/platformio.exe' }
   if (-not (Test-Path -LiteralPath $pioPath)) {
-    throw 'Install the PlatformIO IDE extension in VS Code, open it once, then retry.'
+    throw 'Install PlatformIO Core or open the PlatformIO IDE extension in VS Code, then retry.'
   }
   $pioArguments = switch ($Action) {
     'build' { @('run', '-e', 'esp32dev') }

@@ -1,24 +1,15 @@
 # pH offset configuration
 
-The Configuration sidebar tab compares a known reference pH with the current device reading. With a pH 4.00 reference, a 3.00 device reading and an existing offset of zero, the new offset is +1.00.
+The device stores a per-device pH offset in ESP32 non-volatile settings. Start with the two-point voltage calibration for the physical pH interface. Measure at the GPIO34 junction with the divider in place. Use the actual probe manual and verified buffer solutions. [DFRobot SEN0161 instructions](https://wiki.dfrobot.com/sen0161) · [Wiring guide](WIRING_GUIDE.md#put-these-dividers-between-the-sensors-and-the-esp32)
 
-The calculation is `new offset = existing device offset + reference pH - device measured pH`. New sensor acquisitions then use `pH = pH before offset + new offset`. The existing offset is accounted for so a previously corrected reading is not adjusted twice.
+## Serial workflow
 
-## Workflow
+1. Enable the installed pH sensor and set its measured voltage and pH calibration points in `firmware/include/sensor_settings.h`.
+2. In the serial monitor at 115200 baud with newline enabled, send `ph-offset`. Record the reported device ID and current offset. Send `read` while the probe is stable in a verified reference and note the corrected pH from the CSV preview.
+3. Compute `new offset = current offset + reference pH - measured pH`. For a 4.00 reference, a 3.00 observed pH and a current offset of 0.00, the new offset is +1.00.
+4. Send `ph-offset soil-001 1.000000` with the actual device ID and calculated offset. The firmware will confirm the value after a successful write.
+5. Send `read` and recheck the reference. Reboot and send `ph-offset` to verify persistence. After changing the base voltage calibration, reset the existing offset with `ph-offset soil-001 0` as appropriate and perform a fresh reference check.
 
-1. Complete the sensor's initial voltage calibration and allow the reading to stabilize in a verified reference. The offset feature does not replace initial pH calibration.
-2. Open the ESP32 Serial Monitor and send `ph-offset`. Note the current offset and device ID.
-3. Open Configuration, select/enter that device ID, enter reference pH, the current device reading and the existing offset. Preview the result. Notes can identify the buffer, reference instrument or measurement temperature.
-4. Save the check in this browser and optionally export its JSON record. The browser keeps the last 20 saved checks for each device. These records are local to that browser, are not shared through the database and do not establish that a device applied them.
-5. Copy the generated command, e.g. `ph-offset soil-001 1.000000`, and send it to the device through Serial. The updated firmware validates the device ID and value, saves one device-bound record in NVS, and confirms the active offset. The initial firmware upload is required once to add this command.
-6. Send `read` and check the reference again. Send `ph-offset` after restarting to verify persistence. Reset to zero with `ph-offset soil-001 0` when appropriate. After changing the base voltage calibration, reset the offset and perform a new reference check.
+Future readings will use the new offset. Existing CSVs keep their original pH, pre-offset value and applied offset. Out-of-range corrected values are unavailable. Keep the same device ID when updating an existing board so its previously saved offset remains associated with it.
 
-Only future acquisitions use a new offset. Already queued payloads and uploaded scans retain the measurements recorded at acquisition. New scans with valid pH retain `phCalibration.beforeOffset` and `phCalibration.offset` in their immutable payload. Scan details and CSV export expose these values alongside the recorded pH. Legacy scans without metadata remain supported. The existing database JSON payload stores the metadata without a schema migration. The updated API must be running before uploading these new records.
-
-Offset and pH values must be finite and within the supported ranges. A corrected value outside pH 0 to 14 is unavailable rather than clipped to an endpoint. Disabled or uncalibrated sensors remain unavailable. LittleFS formatting does not reset the offset in NVS. No device command has been sent or tested on hardware before the ESP32 arrives.
-
-## Calibration scope
-
-A single reference adjusts the offset at that point. It does not establish accuracy across the whole pH range. The [DFRobot SEN0161-V2 instructions](https://wiki.dfrobot.com/sen0161-v2/docs/20941) use pH 4.0 and 7.0 buffers for two-point calibration. Follow the actual sensor's instructions and compare independent reference measurements before treating corrected readings as validated soil measurements.
-
-Possible later additions include two-point slope calibration in the tab, calibration reminders, repeat-reading stability checks, moisture reference calibration and authenticated Wi-Fi configuration with device acknowledgement.
+A single reference check resolves an offset at one point. Evaluate agreement across the intended pH range with independent reference measurements.

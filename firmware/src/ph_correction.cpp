@@ -56,5 +56,5 @@ void handlePhOffsetCommand(const String& command) {
   activeOffset = value;
   offsetReady = true;
   printPhOffset();
-  Serial.println("Offset saved. Future readings use it. Queued and uploaded scans retain their original values.");
+  Serial.println("Offset saved. Future readings use it. Existing records retain their original values.");
 }

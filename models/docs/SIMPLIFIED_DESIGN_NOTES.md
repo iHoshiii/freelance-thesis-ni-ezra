@@ -1,5 +1,7 @@
 # Simplified thesis proposal
 
+> These assets depict an earlier prototype. See the [current Word manuscript](../../docs/HYBRID_MULTI_SENSOR_SOIL_READER.docx) for the display, storage and modem layout.
+
 The user's scope instruction and `docs/paper_revised.docx` govern the design. `C:/Users/Administrator/Downloads/FL13_refined.docx` supplies draft component choices; inclusion in that list does not make a feature part of the thesis.
 
 | Item | Treatment |
