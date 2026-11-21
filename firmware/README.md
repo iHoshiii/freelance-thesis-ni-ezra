@@ -41,7 +41,7 @@ Use the [step-by-step wiring guide](../docs/WIRING_GUIDE.md) with a classic ESP3
 | DS18B20 | Data 4 | Three-wire mode. Use a 4.7 kΩ pull-up from data to 3.3 V. |
 | DFRobot SEN0161 pH interface | ADC1 34 | Power the board at 5 V. Use the pH divider in the wiring guide and measure its output before connecting the ESP32. |
 | DFRobot SEN0308 moisture sensor | ADC1 35 | Power the sensor at 3.3 V. Use the moisture divider in the wiring guide. Dry/wet calibration produces a reference index. |
-| Provisional RS485 NPK | UART1 RX 26, TX 27, direction 25 | 3.3 V MAX3485-class transceiver. Connect RO to RX, DI to TX and DE plus active-low RE to direction. Verify A/B, termination, bias and probe supply against the selected module. |
+| Provisional RS485 NPK | UART1 RX 26, TX 27 | Red 3.3 V TTL485-V2.0 MAX3485: adapter TXD to ESP32 RX, adapter RXD to ESP32 TX. Uses automatic direction (`npkDirection = -1`). Set `npkDirection = 25` for a manual-direction `DE` and `/RE` breakout wired to GPIO25. |
 
 The OLED and RTC share SDA and SCL. Verify that the I2C pull-ups go to 3.3 V and check the breakouts for installed pull-ups before adding any. For the referenced SPI microSD breakout, `SO` connects to MISO and `SI` to MOSI. [Adafruit DS3231 breakout](https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout/pinouts), [Adafruit microSD pinout](https://learn.adafruit.com/adafruit-microsd-spi-sdio/pinouts)
 

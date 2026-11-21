@@ -7,6 +7,10 @@ static_assert(!S::npkEnabled || (S::npkFirstRegister >= 0 && S::npkFirstRegister
     "Set the NPK address, read function and first register from the probe manual");
 static const char* status = "not_installed";
 
+static void setTransmit(bool enabled) {
+  if (S::npkDirection >= 0) digitalWrite(S::npkDirection, enabled ? HIGH : LOW);
+}
+
 static uint16_t crc16(const uint8_t* bytes, size_t size) {
   uint16_t crc = 0xffff;
   for (size_t i = 0; i < size; ++i) {
@@ -20,8 +24,8 @@ static uint16_t crc16(const uint8_t* bytes, size_t size) {
 
 void beginNpk() {
   if (!S::npkEnabled) return;
-  pinMode(S::npkDirection, OUTPUT);
-  digitalWrite(S::npkDirection, LOW);
+  if (S::npkDirection >= 0) pinMode(S::npkDirection, OUTPUT);
+  setTransmit(false);
   Serial1.begin(S::npkBaud, SERIAL_8N1, S::npkRx, S::npkTx);
   status = "unknown";
 }
@@ -34,10 +38,10 @@ void readNpk(SensorReading& reading) {
   request[6] = uint8_t(crc);
   request[7] = uint8_t(crc >> 8);
   while (Serial1.available()) Serial1.read();
-  digitalWrite(S::npkDirection, HIGH);
+  setTransmit(true);
   Serial1.write(request, sizeof(request));
   Serial1.flush();
-  digitalWrite(S::npkDirection, LOW);
+  setTransmit(false);
 
   uint8_t response[11];
   size_t received = 0;
