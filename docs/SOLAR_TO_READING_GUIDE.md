@@ -25,15 +25,17 @@ The [public listing photos](https://shopee.ph/DFRobot-solar-power-management-mod
 
 ## 2. Resistors you already have
 
-`b` = brown, `r` = red, `bl` = black. Read the five bands in the order you gave, with the tolerance band last. Check each resistor with a meter while it is out of the circuit. [Vishay color chart](https://www.vishay.com/docs/49411/resistor_color_code_calculator.pdf)
+`b` = brown, `r` = red, `bl` = black. Your ESP32 kit lists **220 Ω, 1 kΩ, and 10 kΩ**. Read each resistor with its tolerance band last. Use a multimeter with power off and the resistor out of the circuit to confirm its value. [Vishay color chart](https://www.vishay.com/docs/49411/resistor_color_code_calculator.pdf)
 
 | Your resistor | Full band colors | Rated value |
 | --- | --- | ---: |
 | First, `b bl bl r b` | Brown, black, black, red, brown | **10 kΩ = 10,000 Ω**, ±1% |
 | Second, `b bl bl b b` | Brown, black, black, brown, brown | **1 kΩ = 1,000 Ω**, ±1% |
-| Third, `b bl bl r r` | Brown, black, black, red, red | **10 kΩ = 10,000 Ω**, ±2% |
+| Third, `b bl bl r r` | Read from the other end as red, red, black, black, brown | **Likely 220 Ω**, ±1%. Confirm with the meter. |
 
-**For both sensors at once, you need four 10 kΩ resistors and one 1 kΩ resistor.** If your first and third resistors are already on moisture, keep them there. Add **two more 10 kΩ** for pH and use your second resistor for the 1 kΩ. For a pH-only test, you can use your three listed resistors together. Read the two chains below separately.
+**Check the third resistor before using either sensor.** Its bands can also be read as 10 kΩ ±2% in the original direction. The kit's 220 Ω option is a reason to check the direction. If you wired the third resistor into either divider, unplug power and measure it. If it reads near **220 Ω (0.22 kΩ)**, replace it with a verified **10 kΩ** resistor before testing.
+
+**For both sensors at once, find four 10 kΩ resistors and one 1 kΩ resistor in the kit.** Use two 10 kΩ for moisture and two 10 kΩ plus one 1 kΩ for pH. Select each resistor by its measured value. Look for about **10,000 Ω** or **1,000 Ω** on the meter.
 
 ## 3. Moisture and pH signal wiring
 
