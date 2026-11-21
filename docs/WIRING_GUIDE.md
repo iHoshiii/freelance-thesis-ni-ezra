@@ -88,6 +88,8 @@ Put each capacitor's other leg on GND. Before connecting GPIO34 or GPIO35, power
 
 ## 5. Switch to the Waveshare solar and battery supply
 
+**For the DFRobot Solar Power Manager 5V V1.1 (DFR0559), use the [solar-to-reading guide](SOLAR_TO_READING_GUIDE.md#1-solar-panel-power-manager-and-18650).** The voltages and connections below apply to the Waveshare module.
+
 Bench-test on USB before adding the battery and panel. Use the **Waveshare Solar Power Manager (D)** with its matching factory holder. The holder's three slots share a **3.7 V nominal parallel connection**. Follow the maker's polarity marks and use matched, undamaged cells of the same type and charge state. If you cannot verify the three cells you already have, leave the holder empty and use bench power. Use the factory plug for the holder. Keep cell power and charging wires off the breadboard.
 
 The module accepts **6 to 24 V DC at SOLAR IN** and provides **5 V at up to 3 A** on its regulated output. Use the panel only after you verify a compatible DC solar output on the actual connector. The **6 V, 10 W** seller rating alone does not verify that the panel's USB ports deliver a suitable solar input. Check the output voltage and polarity with the panel disconnected from the manager, then verify it stays within the input range under load. [Waveshare Solar Power Manager (D) manual](https://www.waveshare.com/wiki/Solar_Power_Manager_%28D%29)
