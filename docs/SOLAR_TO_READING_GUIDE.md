@@ -4,6 +4,25 @@
 
 ![Solar input, power manager terminals, both sensor dividers, ESP32 pin map, and scan outputs](../models/images/solar_to_reading.png)
 
+## Materials check
+
+Use this list with the diagram. The LAFVIN kit already lists the ESP32 board, a 0.96-inch OLED, an 830-point breadboard, a micro-USB cable, jumper wires, buttons, and an assortment of 220 Ω, 1 kΩ, and 10 kΩ resistors. Check the OLED in your kit against the wiring table before buying another one. [LAFVIN kit contents](https://lafvintech.com/products/lafvin-basic-starter-kit-for-esp32-esp-32s-wifi-i-ot-development-board-for-arduino-project-learning-kit-with-tutorials)
+
+| Group | Parts or tools to have |
+| --- | --- |
+| ESP32 bench setup | 1 classic ESP32 DevKit, 1 USB data cable, 1 breadboard, and jumper wires that fit the headers you have. |
+| Moisture and pH | 1 SEN0308, 1 SEN0161 interface board and its BNC probe, **four 10 kΩ resistors, one 1 kΩ resistor, and two 100 nF ceramic capacitors**. Use a verified regulated 5 V supply for the SEN0161. |
+| Soil temperature | 1 waterproof DS18B20 probe and **one 4.7 kΩ pull-up resistor**. Check the actual probe wire labels. |
+| Display and controls | 1 four-pin 128×64 I2C SSD1306 and 2 normally open momentary buttons for Scan and View. |
+| Storage and time | 1 compatible 3.3 V SPI microSD breakout and 1 FAT32 microSD card. Add 1 DS3231 and its board-specific backup cell for offline timestamps. Have a PC card reader if needed. |
+| Solar and battery | 1 DFR0559, the panel, 1 compatible 3.7 V rechargeable cell or pack, and an insulated matching holder or connector. Check the panel's raw DC output and the cell rating. Use the cooling pad and fin specified for the DFR0559 with the listed 10 W panel. |
+| Optional NPK | 1 MLE05243 probe, 1 confirmed 3.3 V `TTL485-V2.0` MAX3485 adapter, and a separate regulated supply rated for the probe. The probe wiring chart is still needed. |
+| Optional SMS | 1 Waveshare SIM7600G-H carrier, its matching LTE antenna, active SMS-capable nano-SIM, and a separate regulated 5 V / 3 A bench supply with a suitable cable. |
+| Final assembly | Enclosure, mounts, insulated leads or terminals, and cable strain relief. Select any master switch or fuse for the actual load and wiring. Make the screen, buttons, microSD, and power connections accessible. |
+| Calibration and checks | Multimeter, two pH calibration buffers or powders prepared as labeled, distilled water, pH electrode storage solution, and a clean soil-water sample cup. Use the matching reference instruments when doing thesis validation. |
+
+The current wiring plan uses the **DFR0559 and one compatible cell or pack**. The thesis materials table still shows the old Waveshare manager and its three-slot holder. Use the DFR0559 power limits and connector map below for this hardware. [Thesis materials table](HYBRID_MULTI_SENSOR_SOIL_READER.docx) · [Parts and testing list](COMPLETE_MATERIALS_AND_TESTING_BUDGET.md)
+
 ## 1. Solar panel, power manager, and 18650
 
 The [public listing photos](https://shopee.ph/DFRobot-solar-power-management-module-MPPT-chip-i.988758167.24060590355) show **DFRobot Solar Power Manager 5V V1.1**, matching the **DFR0559**. Check for that printing on the board you receive. Its `SOLAR IN` is marked **4.5 to 6 V** and its `USB OUT` is marked **5 V / 1 A**. The USB socket and 5 V header share the **1 A budget**. These ratings are for the DFR0559 you bought. [DFRobot specifications](https://wiki.dfrobot.com/dfr0559) · [DFRobot setup](https://wiki.dfrobot.com/dfr0559/docs/21505)
@@ -17,11 +36,11 @@ The [public listing photos](https://shopee.ph/DFRobot-solar-power-management-mod
 | Red `5V` header | **pH board red `+`**. Put the blue output jumper in its printed **`ON`** position for this setup. |
 | Black `GND` next to the red header | **pH board black `−`** and the shared **ESP32 `GND`**. Use the ground label next to the `5V` header with its output enabled. |
 
-**Panel check.** Your panel was listed as **6 V / 10 W**. That rating alone does not tell you the actual connector voltage. With the panel disconnected from the manager, identify the raw DC leads, check their polarity, and measure the open-circuit voltage in strong sun. Use the board's printed **6.0 V** as the maximum for this build. Leave the panel disconnected if the connector is unclear or the voltage exceeds 6.0 V. Before using it in the field, also confirm the input stays in the **4.5 to 6.0 V** operating range while charging. The panel's USB sockets are outputs. Match the panel's documented raw DC connector to the green `SOLAR IN` terminal. [DFRobot specifications](https://wiki.dfrobot.com/dfr0559)
+**Panel check.** Your panel was listed as **6 V / 10 W**. Check its documented maximum open-circuit voltage. With the panel disconnected from the manager, identify the raw DC leads, check their polarity, and measure the open-circuit voltage in strong sun. Use the board's printed **6.0 V** as the maximum for this build. Keep the panel disconnected if you cannot identify a compatible raw DC output or confirm that its voltage stays within the limit. Before using it in the field, also confirm the input stays in the **4.5 to 6.0 V** operating range while charging. The panel's USB sockets are outputs. Match the panel's documented raw DC connector to the green `SOLAR IN` terminal. [DFRobot specifications](https://wiki.dfrobot.com/dfr0559)
 
 **Battery check.** Use a cell or pack rated for **4.2 V full charge** and the manager's **up to 900 mA charge current**. Check the actual cell specification and holder polarity before connecting `BAT IN`. The listing's capacity alone is insufficient to verify the cell. Keep the bare cell leads off the breadboard. Follow your module's cooling instructions for a panel rated 5 W or more. If the outputs stay off after replacing the cell, follow DFRobot's `BOOT` instructions. [Battery and cooling notes](https://wiki.dfrobot.com/dfr0559/docs/21505) · [Battery selection](https://wiki.dfrobot.com/dfr0559/docs/21586)
 
-**Shut down before moving wires.** Disconnect the panel, battery, and charger from the manager, and remove PC USB power when rewiring. `USB OUT` can stay live with the blue jumper set to `OFF`, so the jumper alone does not turn off the whole setup. Use ESP32 `3V3` for the 3.3 V modules and keep it separate from the manager's positive 5 V output. [DFRobot output details](https://wiki.dfrobot.com/dfr0559/docs/21586) · [ESP32 power options](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#power-supply-options)
+**Shut down before moving wires.** Disconnect the panel, battery, and charger from the manager, and remove PC USB power when rewiring. `USB OUT` can stay live with the blue jumper set to `OFF`. The shared ESP32 ground can also bypass the header's ground switch, so disconnect the power sources for shutdown. Use ESP32 `3V3` for the 3.3 V modules and keep it separate from the manager's positive 5 V output. [DFRobot output details](https://wiki.dfrobot.com/dfr0559/docs/21586) · [ESP32 power options](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#power-supply-options)
 
 ## 2. Resistors you already have
 
@@ -68,12 +87,12 @@ Use the GPIO number printed on the board, for example `D21`, `21`, or `IO21`. Th
 | Part | ESP32 signal connections | Power or other connection |
 | --- | --- | --- |
 | SSD1306 I2C OLED | `SDA → D21`, `SCL` or I2C `SCK → D22` | Matching `VCC → 3V3`, `GND → GND`. Firmware address `0x3C`. |
-| DS3231 clock | `SDA → D21`, `SCL → D22` | Use a board rated for `3V3`, including its I2C pull-ups. `GND → GND`. Clock address `0x68`. |
+| DS3231 clock | `SDA → D21`, `SCL → D22` | Use a board rated for `3V3`, including its I2C pull-ups. `GND → GND`. Clock address `0x68`. Use only the backup cell specified for that breakout. |
 | 3.3 V SPI microSD board | `SCK → D18`, `MISO/DO → D19`, `MOSI/DI → D23`, `CS → D13` | Use the module's documented 3.3 V power input and GND. Insert the FAT32 card while power is off. |
 | DS18B20 temperature probe | `DQ → D4`, with **4.7 kΩ** from `D4` to `3V3` | `VDD → 3V3`, `GND → GND`. Verify the probe's wire labels. A four-band 4.7 kΩ resistor can be yellow, violet, red, gold. |
 | Scan and View buttons | Scan `D32 → switch → GND`, View `D33 → switch → GND` | Pick contacts that close when pressed. The firmware enables internal pull-ups. |
 | Red TTL485-V2.0 MAX3485 breakout | Adapter `TXD → D26`, adapter `RXD → D27` | `VCC → 3V3`, `GND → GND`. Automatic direction. The probe's confirmed RS485 wires go to `D+/A` and `D-/B`. |
-| Waveshare SIM7600G-H carrier | Modem `TXD → D16`, modem `RXD → D17`, `GND → GND` | Separate regulated **5 V / 3 A** bench supply at its documented USB input. Use its default 3.3 V logic with `VIO` open. Insert the SIM and attach the antenna before power-on. |
+| Waveshare SIM7600G-H carrier | Modem `TXD → D16/RX2`, modem `RXD → D17/TX2`, `GND → GND` | Separate regulated **5 V / 3 A** bench supply at its documented USB input. Use its default 3.3 V logic with `VIO` open. Insert the SIM and attach the antenna before power-on. |
 
 **NPK probe.** Your probe wires are **blue, brown, black, and yellow**. Their roles are unverified. Keep all four wires disconnected until the manual for your unit identifies `A`, `B`, power positive, ground, and the supply voltage. Then power the probe from its verified supply and share ground with the non-isolated MAX3485. Check the adapter's `TTL485-V2.0` marking before using the pin table. Confirm the probe's Modbus address, baud rate, function, and first register before enabling NPK in the firmware. [Adapter listing and photos](https://shopee.ph/MAX3485-Module-TTL-To-RS485-Module-MCU-Development-Accessories-i.215434955.26054546212) · [The probe listing](https://makerlab.ph/products/rs485-output-3pin-probes-soil-npk-sensor-with-cable-2m)
 
@@ -83,12 +102,12 @@ The seller's photo shows the label **SOIL NPK STORAGE**. Ask the seller whether 
 
 ## 5. Test in this order
 
-1. **PC USB and moisture.** With `moistureEnabled = true`, send `read` in Serial Monitor. Record stable **Moisture input** readings in mV for dry and wet references at the same probe depth. Enter those measured endpoints for your moisture index.
+1. **PC USB and moisture.** With `moistureEnabled = true`, send `read` in Serial Monitor. Record stable **Moisture input** readings in mV for dry and wet references at the same probe depth. Enter those measured endpoints and upload for your moisture index. The checked-in firmware has moisture enabled for raw mV and the calibration fields are still empty. [Sensor settings](../firmware/include/sensor_settings.h)
 2. **pH by itself.** Run the powered meter test with `D34` disconnected. In two labeled calibration buffers, record each exact pH and stable junction voltage. Rinse the probe tip between buffers. Connect `D34` with power off once the voltage check passes. Enable `phEnabled`, fill in the measured pH and mV pairs, upload, and verify `read`. Use the final wiring when calibrating. [DFRobot pH procedure](https://wiki.dfrobot.com/sen0161/docs/19898) · [Upload and monitor commands](../command.md)
-3. **Temperature, OLED, clock, and storage.** Add and check each part one at a time. Enable the temperature input after wiring it. Set the RTC if installed. Press **Scan**, check the OLED, then hold **View** and open **Past Scans** to confirm the record is readable.
+3. **Temperature, OLED, clock, and storage.** Add and check each part one at a time. Enable the temperature input after wiring it. If installed, set the clock in UTC with `rtc-set`. Use a soil-water sample cup for the liquid pH probe and use the moisture probe in soil. Press **Scan**, check the OLED, then hold **View** and open **Past Scans** to confirm the record is readable. Shut the reader down before removing the microSD card, then check the CSV in its `scans` folder on the PC. [Serial commands](../command.md)
 4. **Optional NPK and SMS.** Add NPK only after its manual checks. Add SMS after the device can save CSVs. Confirm handset receipt separately from modem submission.
 5. **Portable power.** Verify the DFR0559's 5 V output with a compatible battery and the panel disconnected. Move the ESP32 USB cable from the PC to the manager's `USB OUT`. Check the shared 5 V output under load during a scan and SD write. Keep within **1 A total** and watch for resets. Add the panel only after its input checks pass.
 
 ## 6. What happens when you press Scan
 
-**Solar charging or battery → DFR0559 → ESP32 and sensors → Scan → OLED results and microSD CSV → Past Scans.** A configured, idle modem may submit an SMS after a successful save. OLED readings and microSD storage work offline. Wi-Fi is optional and Bluetooth pairing is still pending in the firmware. [Firmware capture flow](../firmware/src/main.cpp) · [OLED menu](../firmware/src/display.cpp)
+**Solar charging or battery → DFR0559 → ESP32 and sensors → Scan → OLED results and microSD CSV → Past Scans.** A scan saves when it has at least one usable reading and the SD write succeeds. A configured, idle modem may submit an SMS after a successful save. OLED readings and microSD storage work offline. Wi-Fi is optional and Bluetooth pairing is still pending in the firmware. [Firmware capture flow](../firmware/src/main.cpp) · [OLED menu](../firmware/src/display.cpp)
